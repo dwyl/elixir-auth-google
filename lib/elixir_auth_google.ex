@@ -1,18 +1,10 @@
 defmodule ElixirAuthGoogle do
   @moduledoc """
-  Documentation for ElixirAuthGoogle.
+  Minimalist Google OAuth Authentication for Elixir Apps
   """
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> ElixirAuthGoogle.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def login_url do
+    client_id = Application.fetch_env!(:elixir_auth_google, :client_id)
+    "Google url for the application with client id: #{client_id}"
   end
 end
