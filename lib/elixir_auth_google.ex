@@ -22,10 +22,8 @@ defmodule ElixirAuthGoogle do
          code: code
     })
 
-    token = HTTPoison.post(@google_token_url, body)
+    HTTPoison.post!(@google_token_url, body)
     |> Map.fetch!(:body)
     |> Poison.decode!()
-
-    token
   end
 end
