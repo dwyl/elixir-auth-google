@@ -12,9 +12,15 @@ def deps do
 end
 ```
 
-- Create a Google application and add the `google_client_id`
-  to your appication configuration, for example in `config.exs`:
+- Create a Google application and generate OAuth credentials for the application
+  
+- Set up `:elixir_auth_google` configuration values 
+`google_client_id`, `google_scope` ("profile" by default) and `google_redirect_uri` (the same as the one defined in the google application)
+
+, for example in `config.exs`:
 ```elixir
 config :elixir_auth_google,
   google_client_id: <YOUR-CLIENT-ID-HERE>,
+  google_scope: "profile",
+  google_redirect_uri: <REDIRECT_URI>,
 ```
