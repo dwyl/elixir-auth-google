@@ -4,6 +4,7 @@ defmodule ElixirAuthGoogle do
   """
   @google_auth_url "https://accounts.google.com/o/oauth2/v2/auth?response_type=code"
   @google_token_url "https://oauth2.googleapis.com/token"
+  @google_user_profile "https://www.googleapis.com/auth/userinfo.profile"
 
   def generate_oauth_url do
     client_id = Application.get_env(:elixir_auth_google, :google_client_id)
@@ -23,6 +24,13 @@ defmodule ElixirAuthGoogle do
     })
 
     HTTPoison.post!(@google_token_url, body)
+    |> Map.fetch!(:body)
+    |> Poison.decode!()
+  end
+
+  def get_user_profile(token) do
+    "#{@google_user_profile}?access_token=#{token}"
+    |> HTTPoison.get!()
     |> Map.fetch!(:body)
     |> Poison.decode!()
   end
