@@ -12,9 +12,6 @@ def deps do
 end
 ```
 
-- Create a Google application and add the `client_id` of the application
-  to your appication configuration, for example in `config.exs`:
-```elixir
-config :elixir_auth_google,
-  client_id: <YOUR-CLIENT-ID-HERE>,
-```
+- Create a Google application and add create the environment variable `GOOGLE_CLIENT_ID`
+containing the client id of the application just created. `elixir-auth-google` package will
+load this value automatically but will raised an error if it is not defined.
