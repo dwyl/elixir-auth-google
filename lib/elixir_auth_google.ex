@@ -4,7 +4,7 @@ defmodule ElixirAuthGoogle do
   """
 
   def login_url do
-    client_id = Application.fetch_env!(:elixir_auth_google, :client_id)
+    client_id = Application.fetch_env!(:elixir_auth_google, :google_client_id)
     "Google url for the application with client id: #{client_id}"
   end
 end
