@@ -8,7 +8,7 @@ defmodule ElixirAuthGoogle.MixProject do
     [
       app: :elixir_auth_google,
       version: @version,
-      elixir: "~> 1.8",
+      elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       description: @description,
@@ -26,7 +26,8 @@ defmodule ElixirAuthGoogle.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:httpoison, "~> 1.6"}
+      {:httpoison, "~> 1.6"},
+      {:poison, "~> 4.0"}
     ]
   end
 
