@@ -24,3 +24,15 @@ config :elixir_auth_google,
   google_scope: "profile",
   google_redirect_uri: <REDIRECT_URI>,
 ```
+
+- Create a new endpoint matching the `google_redirect_uri`.
+On this endpoint you can exchange the google code for the user's token and 
+then get the user profile:
+
+```eixir
+  def index(conn, %{"code" => code}) do
+    token = ElixirAuthGoogle.get_token(code)
+    profile = ElixirAuthGoogle.get_user_profile(token["access_token"])
+    render(conn, "index.html", profile: profile)
+  en
+```
