@@ -8,7 +8,7 @@ defmodule ElixirAuthGoogle.MixProject do
     [
       app: :elixir_auth_google,
       version: @version,
-      elixir: "~> 1.8",
+      elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       description: @description,
