@@ -1,8 +1,14 @@
+<div align="center">
 # `elixir-auth-google`
 
 The _easiest_ way to add Google OAuth authentication to your Elixir Apps.
 
 ![sign-in-with-google](https://user-images.githubusercontent.com/194400/69637172-07a67900-1050-11ea-9e25-2b9e84a49d91.png)
+
+[![Build Status](https://github.com/dwyl/elixir-auth-google/workflows/Elixir%20CI/badge.svg?style=flat-square)](https://github.com/dwyl/elixir-auth-google)
+<!-- [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg?style=flat-square)](https://GitHub.com/TutorialsAndroid/GButton) -->
+
+</div>
 
 # _Why_? 🤷
 
@@ -18,7 +24,14 @@ There were already _several_ available options
 for adding Google Auth to apps
 that added _far_ too implementation steps (complexity)
 and had incomplete documentation and testing.
-We needed something lightweight and easy for beginners to understand/use.
+e.g:
+[github.com/googleapis/elixir-google-api](https://github.com/googleapis/elixir-google-api)
+which is a
+["_generated_"](https://github.com/googleapis/elixir-google-api/blob/master/scripts/generate_client.sh)
+client and is considered "experimental". <br />
+We needed a lightweight solution
+that only does _one_ thing
+and easy for complete beginners to understand/use.
 We have drawn inspiration from several sources
 including packages in other programming languages to build our solution.
 This package is _much_ simpler
@@ -45,7 +58,7 @@ and you'll be up-and running in 5 minutes.
 
 You can use `elixir_auth_google` in your Elixir App in 4 easy steps:
 
-## 1. Add the hex package
+## 1. Add the hex package to `deps` 📦
 
 Open your project's **`mix.exs`** file
 and locate the **`deps`** (dependencies) section.
@@ -64,7 +77,9 @@ remember to run the **`mix deps.get`** command
 to _download_ the dependencies.
 
 
-##
+## 2. Create a  🆕
+
+Visit https://console.developers.google.com and
 
 2. Create a Google application and generate OAuth credentials for the application
 
