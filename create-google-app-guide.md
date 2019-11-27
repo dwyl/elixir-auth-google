@@ -147,9 +147,20 @@ Example:
 }
 ```
 
-> Again, fore security reasons,
-these credentials were invalidated _immediately_ after downloading.
-But this is what they look like.
+> Again, for security reasons,
+these credentials were
+invalidated _immediately_ after downloading. <br />
+But this is what the file looks like.
 
 
 ## 6. Save the Credentials in your `.env` File
+
+Once you have the credentials for your OAuth Client,
+add them to your **`.env`** (_environment variables_) file.
+
+e.g:
+
+```
+export GOOGLE_CLIENT_ID=631770888008-6n0oruvsm16kbkqg6u76p5cv5kfkcekt.apps.googleusercontent.com
+export GOOGLE_CLIENT_SECRET=MHxv6-RGF5nheXnxh1b0LNDq
+```
