@@ -21,21 +21,24 @@ capability to our Elixir App(s). <br />
 # _What_? 💭
 
 An Elixir package that seamlessly handles
-Google OAuth2 Authentication/Authorization.
+Google OAuth2 Authentication/Authorization
+in as few steps as possible.
+Following best practices for security & privacy
+and avoiding complexity.
 
-> We needed a lightweight solution
+> We built a lightweight solution
 that only does _one_ thing
-and is easy for complete beginners to understand/use.
+and is easy for complete beginners to understand/use. <br />
 There were already _several_ available options
 for adding Google Auth to apps on on Hex.pm:
 [hex.pm/packages?search=google](https://hex.pm/packages?search=google)
 that all added _far_ too implementation steps (complexity)
-and had incomplete documentation and testing.
+and had incomplete documentation and testing. <br />
 e.g:
 [github.com/googleapis/elixir-google-api](https://github.com/googleapis/elixir-google-api)
 which is a
 ["_generated_"](https://github.com/googleapis/elixir-google-api/blob/master/scripts/generate_client.sh)
-client and is considered "experimental".
+client and is considered "experimental". <br />
 We have drawn inspiration from several sources
 including packages in other programming languages to build this package.
 This package is _much_ simpler
@@ -59,9 +62,11 @@ Just follow the detailed instructions
 and you'll be up-and running in 5 minutes.
 
 
-# How? ✅
+# _How_? ✅
 
-You can use `elixir_auth_google` in your Elixir App in 4 easy steps:
+You can add Google Authentication to your Elixir App
+using **`elixir_auth_google`** in under **5 minutes**
+by following these **5 _easy_ steps**:
 
 ## 1. Add the hex package to `deps` 📦
 
@@ -95,13 +100,7 @@ http://localhost:4000
 http://localhost:4000/auth/google/callback
 
 
-631770888008-6n0oruvsm16kbkqg6u76p5cv5kfkcekt.apps.googleusercontent.com
 
-MHxv6-RGF5nheXnxh1b0LNDq
-
-> Don't worry, these keys aren't valid.
-We deleted them immediately after capturing the screenshot
-to avoid any security issues.
 
 
 2. Create a Google application and generate OAuth credentials for the application
@@ -131,6 +130,9 @@ and then get the user profile:
 ```
 
 
+# _Implementation_ Details 💡
+
+
 
 If you are using the the **`elixir_auth_google`** package
 in a Phoenix application (_the most popular use case_),
@@ -146,7 +148,7 @@ and paste the resulting string
 
 <br /><br />
 
-## Notes 💡
+## Notes 📝
 
 + Official Docs for Google Identity Platform:
 https://developers.google.com/identity/choose-auth
