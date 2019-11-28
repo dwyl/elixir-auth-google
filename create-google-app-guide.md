@@ -4,11 +4,13 @@ This is a step-by-step guide
 to creating a Google App from scratch
 so that you can obtain the API keys
 to add Google OAuth2 Authentication
-to your Elixir App. <br />
-It follows the official docs:
+to your Elixir App
+and save the credentials to environment variables.<br />
+Our guide follows the _official_ docs:
 https://developers.google.com/identity/sign-in/web/server-side-flow <br />
-But adds detail to the steps that are otherwise confusing.
-The guide is checked periodically by the @dwyl team/community,
+We've added detail and screenshots to the steps
+because some people have found the official Google API docs confusing. <br />
+_This_ guide is checked periodically by the @dwyl team/community,
 but Google are known to occasionally change their UI/Workflow,
 so if anything has changed, or there are extra/fewer steps,
 [please let us know!](https://github.com/dwyl/elixir-auth-google/issues)
@@ -18,7 +20,7 @@ so if anything has changed, or there are extra/fewer steps,
 In your preferred web browser,
 visit:
 https://console.developers.google.com
-and ensure you are authenticated
+and ensure you are authenticated with your Google Account
 so you can see your "API & Services Dashboard":
 
 <img width="972" alt="elixir-auth-google-create-new-app" src="https://user-images.githubusercontent.com/194400/69722359-c7f29680-110e-11ea-90ae-da11ba42cc4a.png">
@@ -47,6 +49,8 @@ Click the **OAuth Consent Screen** from the left side menu:
 
 <img width="959" alt="elixir-auth-google-consent-screen" src="https://user-images.githubusercontent.com/194400/69727668-e78fbc00-111a-11ea-8b39-124a4b045b02.png">
 
+Make the Application **`Public`** (_the default option_) and
+input the same name as you used for your application in step 1.
 Upload an image if you have one (_e.g: the icon/logo for your app_):
 
 <img width="1226" alt="OAuth-consent-screen-1of2" src="https://user-images.githubusercontent.com/194400/69727443-76500900-111a-11ea-9425-bff972afe565.png">
