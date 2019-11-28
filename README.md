@@ -22,16 +22,17 @@ capability to our Elixir App(s). <br />
 
 An Elixir package that seamlessly handles
 Google OAuth2 Authentication/Authorization
-in as few steps as possible.
+in as few steps as possible. <br />
 Following best practices for security & privacy
-and avoiding complexity.
+and avoiding complexity
+by having sensible defaults for all settings.
 
 > We built a lightweight solution
 that only does _one_ thing
 and is easy for complete beginners to understand/use. <br />
 There were already _several_ available options
 for adding Google Auth to apps on
-[hex.pm/packages?search=google](https://hex.pm/packages?search=google)
+[hex.pm/packages?search=google](https://hex.pm/packages?search=google) <br />
 that all added _far_ too implementation steps (complexity)
 and had incomplete documentation and testing. <br />
 e.g:
@@ -89,7 +90,7 @@ in your terminal
 to _download_ the dependencies.
 
 
-## 2. Create a Google APIs Application OAuth2 Credentials 🆕
+## 2. Create Google APIs Application OAuth2 Credentials 🆕
 
 Create a Google Application if you don't already have one,
 generate the OAuth2 Credentials for the application
@@ -100,15 +101,58 @@ accessible by your app.
 so if you don't already have a Google App,
 we created the following step-by-step guide
 to make it quick and _relatively_ painless:
-[create-google-app-guide.md](https://github.com/dwyl/elixir-auth-google/blob/master/create-google-app-guide.md)
+[create-google-app-guide.md](https://github.com/dwyl/elixir-auth-google/blob/master/create-google-app-guide.md) <br />
+Don't be intimidated by all the buzz-words;
+it's quite straightforward.
+And if you get stuck, ask for
+[help!](https://github.com/dwyl/elixir-auth-google/issues)
+
 
 By the end of this step
 you should have these two environment variables set:
 
 ```yml
-export GOOGLE_CLIENT_ID=631770888008-6n0oruvsm16kbkqg6u76p5cv5kfkcekt.apps.googleusercontent.com
-export GOOGLE_CLIENT_SECRET=MHxv6-RGF5nheXnxh1b0LNDq
+GOOGLE_CLIENT_ID=631770888008-6n0oruvsm16kbkqg6u76p5cv5kfkcekt.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=MHxv6-RGF5nheXnxh1b0LNDq
 ```
+
+> ⚠️ Don't worry, these keys aren't valid.
+They are just here for illustration purposes.
+
+
+## 3. Create a `GoogleAuthController` in your Project
+
+
+> Example code:
+
+
+## 3. Add the "Login with Google" Button to your Template ✨
+
+
+
+> Example code:
+
+
+
+
+## 3. Create the `/auth/google` Endpoint 📝
+
+Open your **`router.ex`** file and add the `/auth/google` Endpoint
+
+Create a new endpoint matching the `google_redirect_uri`.
+On this endpoint you can exchange the google code
+for the user's token
+and then get the user profile:
+
+```eixir
+  def index(conn, %{"code" => code}) do
+    token = ElixirAuthGoogle.get_token(code)
+    profile = ElixirAuthGoogle.get_user_profile(token["access_token"])
+    render(conn, "index.html", profile: profile)
+  en
+```
+
+
 
 
 
@@ -123,26 +167,16 @@ config :elixir_auth_google,
   google_redirect_uri: <REDIRECT_URI>,
 ```
 
-- Create a new endpoint matching the `google_redirect_uri`.
-On this endpoint you can exchange the google code
-for the user's token
-and then get the user profile:
-
-```eixir
-  def index(conn, %{"code" => code}) do
-    token = ElixirAuthGoogle.get_token(code)
-    profile = ElixirAuthGoogle.get_user_profile(token["access_token"])
-    render(conn, "index.html", profile: profile)
-  en
-```
 
 
-# _Implementation_ Details 💡
+<br /> <br />
 
+## _Implementation_ Details 💡
 
 
 If you are using the the **`elixir_auth_google`** package
 in a Phoenix application (_the most popular use case_),
+these implementation details might be helpful.
 
 
 ### Generating Phoenix Session Key (`SECRET_KEY_BASE`) and Encryption Keys
