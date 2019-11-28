@@ -19,3 +19,7 @@ jobs:
         mix deps.get
     - name: Run Tests
       run: mix test
+    - name: Run Coverage
+      run: mix coveralls.json
+    - name: Codecov
+      run: bash <(curl -s https://codecov.io/bash) # send coverage report
