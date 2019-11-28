@@ -88,22 +88,28 @@ in your terminal
 to _download_ the dependencies.
 
 
-## 2. Create a Google Application 🆕
+## 2. Create a Google APIs Application OAuth2 Credentials 🆕
 
-Visit
-[console.developers.google.com](https://console.developers.google.com/projectselector2/apis/dashboard)
-and
+Create a Google Application if you don't already have one,
+generate the OAuth2 Credentials for the application
+and save the credentials as environment variables
+accessible by your app.
+
+> **Note**: There are a few steps to creating a set of Google APIs credentials,
+so if you don't already have a Google App,
+we created the following step-by-step guide
+to make it quick and _relatively_ painless:
+[create-google-app-guide.md](https://github.com/dwyl/elixir-auth-google/blob/master/create-google-app-guide.md)
+
+By the end of this step
+you should have these two environment variables set:
+
+```yml
+export GOOGLE_CLIENT_ID=631770888008-6n0oruvsm16kbkqg6u76p5cv5kfkcekt.apps.googleusercontent.com
+export GOOGLE_CLIENT_SECRET=MHxv6-RGF5nheXnxh1b0LNDq
+```
 
 
-http://localhost:4000
-
-http://localhost:4000/auth/google/callback
-
-
-
-
-
-2. Create a Google application and generate OAuth credentials for the application
 
 3. Set up `:elixir_auth_google` configuration values
 `google_client_id`, `google_scope` ("profile" by default) and `google_redirect_uri` (the same as the one defined in the google application)
