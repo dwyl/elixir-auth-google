@@ -15,7 +15,7 @@ but Google are known to occasionally change their UI/Workflow,
 so if anything has changed, or there are extra/fewer steps,
 [please let us know!](https://github.com/dwyl/elixir-auth-google/issues)
 
-## 1. Create a New Project
+## 1. Create a New Project
 
 In your preferred web browser,
 visit:
