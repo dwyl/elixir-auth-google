@@ -30,7 +30,7 @@ and avoiding complexity.
 that only does _one_ thing
 and is easy for complete beginners to understand/use. <br />
 There were already _several_ available options
-for adding Google Auth to apps on on Hex.pm:
+for adding Google Auth to apps on
 [hex.pm/packages?search=google](https://hex.pm/packages?search=google)
 that all added _far_ too implementation steps (complexity)
 and had incomplete documentation and testing. <br />
@@ -40,8 +40,8 @@ which is a
 ["_generated_"](https://github.com/googleapis/elixir-google-api/blob/master/scripts/generate_client.sh)
 client and is considered "experimental". <br />
 We have drawn inspiration from several sources
-including packages in other programming languages to build this package.
-This package is _much_ simpler
+including code from other programming languages to build this package.
+This result is _much_ simpler
 than anything else
 and has both step-by-step instructions
 and an _complete working example_ App
@@ -57,7 +57,7 @@ and more maintainably.
 
 It's targetted at _complete_ beginners
 with no prior experience/knowledge
-of auth "schemes" or "strategies".
+of auth "schemes" or "strategies". <br />
 Just follow the detailed instructions
 and you'll be up-and running in 5 minutes.
 
@@ -65,7 +65,8 @@ and you'll be up-and running in 5 minutes.
 # _How_? ✅
 
 You can add Google Authentication to your Elixir App
-using **`elixir_auth_google`** in under **5 minutes**
+using **`elixir_auth_google`** <br />
+in under **5 minutes**
 by following these **5 _easy_ steps**:
 
 ## 1. Add the hex package to `deps` 📦
