@@ -12,7 +12,14 @@ defmodule ElixirAuthGoogle.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       description: @description,
-      package: package()
+      package: package(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.json": :test,
+        "coveralls.html": :test
+      ]
+
     ]
   end
 
@@ -27,7 +34,8 @@ defmodule ElixirAuthGoogle.MixProject do
   defp deps do
     [
       {:httpoison, "~> 1.6"},
-      {:poison, "~> 4.0"}
+      {:poison, "~> 4.0"},
+      {:excoveralls, "~> 0.12.1", only: [:test, :dev]}
     ]
   end
 
