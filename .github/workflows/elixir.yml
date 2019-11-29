@@ -21,6 +21,8 @@ jobs:
       run: mix test
     - name: Run Coverage
       run: mix coveralls.json
-    - name: Codecov
-      run: |
-        sh <(curl -s https://codecov.io/bash)
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: 5e27328a-c381-4998-8ce2-5e84c44284c4
+        file: ./cover/excoveralls.json
