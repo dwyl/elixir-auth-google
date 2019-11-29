@@ -6,10 +6,11 @@ The _easiest_ way to add Google OAuth authentication to your Elixir Apps.
 
 ![sign-in-with-google-buttons](https://user-images.githubusercontent.com/194400/69637172-07a67900-1050-11ea-9e25-2b9e84a49d91.png)
 
-[![Build Status](https://img.shields.io/travis/dwyl/fields/master.svg?style=flat-square)](https://travis-ci.org/dwyl/fields)
-[![codecov.io](https://img.shields.io/codecov/c/github/dwyl/fields/master.svg?style=flat-square)](http://codecov.io/github/dwyl/fields?branch=master)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/dwyl/fields/issues)
-[![HitCount](http://hits.dwyl.io/dwyl/fields.svg)](http://hits.dwyl.io/dwyl/fields)
+[![Build Status](https://img.shields.io/travis/dwyl/elixir-auth-google/master.svg?style=flat-square)](https://travis-ci.org/dwyl/elixir-auth-google)
+[![codecov.io](https://img.shields.io/codecov/c/github/dwyl/elixir-auth-google/master.svg?style=flat-square)](http://codecov.io/github/dwyl/elixir-auth-google?branch=master)
+![Hex.pm](https://img.shields.io/hexpm/v/elixir_auth_google?color=brightgreen&style=flat-square)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/dwyl/elixir-auth-google/issues)
+<!-- [![HitCount](http://hits.dwyl.io/dwyl/elixir-auth-google.svg)](http://hits.dwyl.io/dwyl/elixir-auth-google) -->
 <!-- [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg?style=flat-square)](https://GitHub.com/TutorialsAndroid/GButton) -->
 
 </div>
@@ -76,7 +77,7 @@ by following these **5 _easy_ steps**:
 ## 1. Add the hex package to `deps` 📦
 
 Open your project's **`mix.exs`** file
-and locate the **`deps`** (dependencies) section.
+and locate the **`deps`** (dependencies) section. <br />
 Add a line for **`:elixir_auth_google`** in the **`deps`** list:
 
 ```elixir
@@ -126,24 +127,6 @@ They are just here for illustration purposes.
 ## 3. Create a `GoogleAuthController` in your Project
 
 
-
-
-> Example code:
-
-
-## 3. Add the "Login with Google" Button to your Template ✨
-
-
-
-> Example code:
-
-
-
-
-## 3. Create the `/auth/google` Endpoint 📝
-
-Open your **`router.ex`** file and add the `/auth/google` Endpoint
-
 Create a new endpoint matching the `google_redirect_uri`.
 On this endpoint you can exchange the google code
 for the user's token
@@ -159,8 +142,6 @@ and then get the user profile:
 
 
 
-
-
 3. Set up `:elixir_auth_google` configuration values
 `google_client_id`, `google_scope` ("profile" by default) and `google_redirect_uri` (the same as the one defined in the google application)
 
@@ -172,6 +153,25 @@ config :elixir_auth_google,
   google_redirect_uri: <REDIRECT_URI>,
 ```
 
+
+
+
+> Example code:
+
+
+
+
+## 4. Create the `/auth/google` Endpoint 📝
+
+Open your **`router.ex`** file and add the `/auth/google` Endpoint
+
+
+
+## 5. Add the "Login with Google" Button to your Template ✨
+
+
+
+> Example code:
 
 
 <br /> <br />
