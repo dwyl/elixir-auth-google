@@ -23,4 +23,4 @@ jobs:
       run: mix coveralls.json
     - name: Codecov
       run: |
-        bash <(curl -s https://codecov.io/bash)
+        sh <(curl -s https://codecov.io/bash)
