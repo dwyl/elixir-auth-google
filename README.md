@@ -127,6 +127,7 @@ They are just here for illustration purposes.
 
 ## 3. Create a `GoogleAuthController` in your Project 📝
 
+> 🔜 Simplified instructions coming soon!
 
 Create a new endpoint matching the `google_redirect_uri`.
 On this endpoint you can exchange the google code
@@ -141,9 +142,7 @@ and then get the user profile:
   en
 ```
 
-
-
-3. Set up `:elixir_auth_google` configuration values
+Set up `:elixir_auth_google` configuration values
 `google_client_id`, `google_scope` ("profile" by default) and `google_redirect_uri` (the same as the one defined in the google application)
 
 for example in `config.exs`:
@@ -155,10 +154,7 @@ config :elixir_auth_google,
 ```
 
 
-
-
 > Example code:
-
 
 
 
@@ -168,9 +164,7 @@ Open your **`router.ex`** file
 and add the `/auth/google/callback` endpoint.
 
 
-
 ## 5. Add the "Login with Google" Button to your Template ✨
-
 
 
 > Example code:
