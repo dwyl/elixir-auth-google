@@ -13,11 +13,6 @@ defmodule ElixirAuthGoogle do
   redirect_uri which is the URL Google will redirect to when auth is successful.
   This is the URL you need to use for your "Login with Google" button.
   See step 5 of the instructions.
-
-  ## Examples
-
-      iex> ElixirAuthGoogle.generate_oauth_url()
-      "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=&scope=profile&redirect_uri="
   """
   @spec generate_oauth_url :: String.t
   def generate_oauth_url do
