@@ -9,15 +9,15 @@ defmodule ElixirAuthGoogle do
   @google_user_profile "https://www.googleapis.com/oauth2/v3/userinfo"
 
   @doc """
-  generate_oauth_url/0 creates the Google OAuth2 URL with client_id, scope and
+  `generate_oauth_url/0` creates the Google OAuth2 URL with client_id, scope and
   redirect_uri which is the URL Google will redirect to when auth is successful.
   This is the URL you need to use for your "Login with Google" button.
   See step 5 of the instructions.
 
   ## Examples
 
-  iex> ElixirAuthGoogle.generate_oauth_url()
-  "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=&scope=profile&redirect_uri="
+      iex> ElixirAuthGoogle.generate_oauth_url()
+      "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=&scope=profile&redirect_uri="
   """
   @spec generate_oauth_url :: String.t
   def generate_oauth_url do
@@ -29,10 +29,12 @@ defmodule ElixirAuthGoogle do
   end
 
   @doc """
-  get_token/1 encodes the secret keys and authorization code returned by Google
+  `get_token/1` encodes the secret keys and authorization code returned by Google
   and issues an HTTP request to get a person's profile data.
-  TODO: we still need to handle the various failure conditions >> issues/16
+
+  **TODO**: we still need to handle the various failure conditions >> issues/16
   """
+  @spec get_token(String.t) :: String.t
   def get_token(code) do
     body = Poison.encode!(
       %{ client_id: Application.get_env(:elixir_auth_google, :google_client_id),
@@ -47,12 +49,14 @@ defmodule ElixirAuthGoogle do
   end
 
   @doc """
-  get_user_profile/1 requests the Google User's userinfo profile data
+  `get_user_profile/1` requests the Google User's userinfo profile data
   providing the access_token received in the `get_token/1` above.
   invokes `parse_body_response/1` to decode the JSON data.
-  TODO: we still need to handle the various failure conditions >> issues/16
+
+  **TODO**: we still need to handle the various failure conditions >> issues/16
   At this point the types of errors we expect are HTTP 40x/50x responses.
   """
+  @spec get_user_profile(String.t) :: String.t
   def get_user_profile(token) do
     "#{@google_user_profile}?access_token=#{token}"
     |> @httpoison.get()
@@ -60,16 +64,17 @@ defmodule ElixirAuthGoogle do
   end
 
   @doc """
-  parse_body_response/1 parses the response returned by Google
+  `parse_body_response/1` parses the response returned by Google
   so your app can use the resulting JSON.
   """
+  @spec parse_body_response({atom, String.t}) :: String.t
   def parse_body_response({:error, err}), do: {:error, err}
   def parse_body_response({:ok, response}) do
     body = Map.get(response, :body)
     if body == nil do
       {:error, :no_body}
     else
-      Poison.decode(body)
+      Poison.decode(body) # should return an {:ok, map} tuple for consistecy?
     end
   end
 
