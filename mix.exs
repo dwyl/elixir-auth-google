@@ -12,7 +12,8 @@ defmodule ElixirAuthGoogle.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       description: @description,
-      package: package()
+      package: package(),
+      test_coverage: [tool: ExCoveralls]
     ]
   end
 
