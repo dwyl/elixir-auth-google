@@ -4,7 +4,7 @@ elixir:
 env:
   MIX_ENV=test
 script:
-  - mix coveralls.travis
+  - mix coveralls.json
 after_success:
   - bash <(curl -s https://codecov.io/bash) # send coverage report
 cache:
