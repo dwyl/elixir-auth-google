@@ -31,6 +31,7 @@ Following best practices for security & privacy
 and avoiding complexity
 by having sensible defaults for all settings.
 
+
 > We built a lightweight solution
 that only does _one_ thing
 and is easy for complete beginners to understand/use. <br />
@@ -38,7 +39,7 @@ There were already _several_ available options
 for adding Google Auth to apps on
 [hex.pm/packages?search=google](https://hex.pm/packages?search=google) <br />
 that all added _far_ too implementation steps (complexity)
-and had incomplete documentation and testing. <br />
+and had incomplete documentation (**`@doc false`**) and testing. <br />
 e.g:
 [github.com/googleapis/elixir-google-api](https://github.com/googleapis/elixir-google-api)
 which is a
@@ -124,7 +125,7 @@ GOOGLE_CLIENT_SECRET=MHxv6-RGF5nheXnxh1b0LNDq
 They are just here for illustration purposes.
 
 
-## 3. Create a `GoogleAuthController` in your Project
+## 3. Create a `GoogleAuthController` in your Project 📝
 
 
 Create a new endpoint matching the `google_redirect_uri`.
@@ -161,9 +162,10 @@ config :elixir_auth_google,
 
 
 
-## 4. Create the `/auth/google` Endpoint 📝
+## 4. Create the `/auth/google/callback` Endpoint 📍
 
-Open your **`router.ex`** file and add the `/auth/google` Endpoint
+Open your **`router.ex`** file
+and add the `/auth/google/callback` endpoint.
 
 
 
@@ -174,15 +176,21 @@ Open your **`router.ex`** file and add the `/auth/google` Endpoint
 > Example code:
 
 
+# _Done_!
+
+
+
 <br /> <br />
 
 ## _Implementation_ Details 💡
 
+If you want to dive a bit deeper into _understanding_ how this package works,
+You can read and grok the code in under 10 minutes:
+[`/lib/elixir_auth_google.ex`](https://github.com/dwyl/elixir-auth-google/blob/master/lib/elixir_auth_google.ex)
 
 If you are using the the **`elixir_auth_google`** package
 in a Phoenix application (_the most popular use case_),
 these implementation details might be helpful.
-
 
 ### Generating Phoenix Session Key (`SECRET_KEY_BASE`) and Encryption Keys
 
