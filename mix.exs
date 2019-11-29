@@ -38,7 +38,10 @@ defmodule ElixirAuthGoogle.MixProject do
       {:poison, "~> 4.0"},
 
       # tracking test coverage
-      {:excoveralls, "~> 0.12.1", only: [:test, :dev]}
+      {:excoveralls, "~> 0.12.1", only: [:test, :dev]},
+
+      # documentation
+      {:ex_doc, "~> 0.21.2", only: :dev},
     ]
   end
 
