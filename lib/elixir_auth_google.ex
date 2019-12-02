@@ -13,7 +13,13 @@ defmodule ElixirAuthGoogle do
   `get_baseurl_from_conn/1` derives the base URL from the conn struct
   """
   @spec get_baseurl_from_conn(Map) :: String.t
-  def get_baseurl_from_conn(conn) do
+  def get_baseurl_from_conn(%{host: h, port: p}) when host == "localhost" do
+    "http://#{h}:#{p}"
+  end
+  
+  def get_baseurl_from_conn(%{host: h}) do
+     "https://#{h}"
+  end
     if conn.host == "localhost" do
       "http://" <> conn.host <> ":" <> to_string(conn.port)
     else
