@@ -31,7 +31,11 @@ defmodule ElixirAuthGoogleTest do
   end
 
   test "get Google token" do
-    assert ElixirAuthGoogle.get_token("ok_code") == {:ok, %{"access_token" => "token1"}}
+        conn = %{
+      host: "localhost",
+      port: 4000
+    }
+    assert ElixirAuthGoogle.get_token("ok_code", conn) == {:ok, %{"access_token" => "token1"}}
   end
 
   test "get user profile" do

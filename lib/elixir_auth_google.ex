@@ -22,6 +22,14 @@ defmodule ElixirAuthGoogle do
   end
 
   @doc """
+  `generate_redirect_uri/1` generates the Google redirect uri based on conn
+  """
+  @spec generate_redirect_uri(Map) :: String.t
+  def generate_redirect_uri(conn) do
+    get_baseurl_from_conn(conn) <> "/auth/google/callback"
+  end
+
+  @doc """
   `generate_oauth_url/0` creates the Google OAuth2 URL with client_id, scope and
   redirect_uri which is the URL Google will redirect to when auth is successful.
   This is the URL you need to use for your "Login with Google" button.
@@ -31,24 +39,24 @@ defmodule ElixirAuthGoogle do
   def generate_oauth_url(conn) do
     client_id = Application.get_env(:elixir_auth_google, :google_client_id)
     scope = Application.get_env(:elixir_auth_google, :google_scope ) || "profile"
-    redirect_uri = get_baseurl_from_conn(conn) <> "/auth/google/callback"
+    redirect_uri = generate_redirect_uri(conn)
     # Application.get_env(:elixir_auth_google, :google_redirect_uri)
 
     "#{@google_auth_url}&client_id=#{client_id}&scope=#{scope}&redirect_uri=#{redirect_uri}"
   end
 
   @doc """
-  `get_token/1` encodes the secret keys and authorization code returned by Google
+  `get_token/2` encodes the secret keys and authorization code returned by Google
   and issues an HTTP request to get a person's profile data.
 
   **TODO**: we still need to handle the various failure conditions >> issues/16
   """
-  @spec get_token(String.t) :: String.t
-  def get_token(code) do
+  @spec get_token(String.t, Map) :: String.t
+  def get_token(code, conn) do
     body = Poison.encode!(
       %{ client_id: Application.get_env(:elixir_auth_google, :google_client_id),
          client_secret: Application.get_env(:elixir_auth_google, :google_client_secret),
-         redirect_uri: Application.get_env(:elixir_auth_google, :google_redirect_uri),
+         redirect_uri: generate_redirect_uri(conn),
          grant_type: "authorization_code",
          code: code
     })
