@@ -40,7 +40,6 @@ defmodule ElixirAuthGoogle do
     client_id = Application.get_env(:elixir_auth_google, :google_client_id)
     scope = Application.get_env(:elixir_auth_google, :google_scope ) || "profile"
     redirect_uri = generate_redirect_uri(conn)
-    # Application.get_env(:elixir_auth_google, :google_redirect_uri)
 
     "#{@google_auth_url}&client_id=#{client_id}&scope=#{scope}&redirect_uri=#{redirect_uri}"
   end
