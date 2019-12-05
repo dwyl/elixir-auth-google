@@ -102,7 +102,7 @@ generate the OAuth2 Credentials for the application
 and save the credentials as environment variables
 accessible by your app.
 
-> **Note**: There are a few steps to creating a set of Google APIs credentials,
+> **Note**: There are a few steps for creating a set of Google APIs credentials,
 so if you don't already have a Google App,
 we created the following step-by-step guide
 to make it quick and _relatively_ painless:
