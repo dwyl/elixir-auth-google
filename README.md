@@ -50,7 +50,7 @@ including code from other programming languages to build this package.
 This result is _much_ simpler
 than anything else
 and has both step-by-step instructions
-and an _complete working example_ App
+and a _complete working example_ App
 including how to encrypt tokens for secure storage
 to help you ship your app _fast_.
 
