@@ -1,7 +1,7 @@
 # Creating a Google Application for OAuth2 Authentication
 
 This is a step-by-step guide
-to creating a Google App from scratch
+for creating a Google App from scratch
 so that you can obtain the API keys
 to add Google OAuth2 Authentication
 to your Elixir App
