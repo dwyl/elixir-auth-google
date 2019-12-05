@@ -16,7 +16,7 @@ defmodule ElixirAuthGoogle do
   def get_baseurl_from_conn(%{host: h, port: p}) when h == "localhost" do
     "http://#{h}:#{p}"
   end
-  
+
   def get_baseurl_from_conn(%{host: h}) do
      "https://#{h}"
   end
@@ -90,9 +90,11 @@ defmodule ElixirAuthGoogle do
     body = Map.get(response, :body)
     if body == nil do
       {:error, :no_body}
-    else
-      Poison.decode(body) # should return an {:ok, map} tuple for consistecy?
-    end
+    else # make keys of map atoms for easier access in templates
+      {:ok, str_key_map} = Poison.decode(body)
+      atom_key_map = for {key, val} <- str_key_map, into: %{},
+        do: {String.to_atom(key), val}
+      {:ok, atom_key_map}
+    end # https://stackoverflow.com/questions/31990134
   end
-
 end
