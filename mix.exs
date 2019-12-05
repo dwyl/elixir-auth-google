@@ -2,7 +2,7 @@ defmodule ElixirAuthGoogle.MixProject do
   use Mix.Project
 
   @description "Minimalist Google OAuth Authentication for Elixir Apps"
-  @version "0.1.0"
+  @version "1.0.0"
 
   def project do
     [
@@ -13,13 +13,14 @@ defmodule ElixirAuthGoogle.MixProject do
       deps: deps(),
       description: @description,
       package: package(),
+
+      # coverage
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
         "coveralls.json": :test,
         "coveralls.html": :test
       ]
-
     ]
   end
 
@@ -35,7 +36,12 @@ defmodule ElixirAuthGoogle.MixProject do
     [
       {:httpoison, "~> 1.6"},
       {:poison, "~> 4.0"},
-      {:excoveralls, "~> 0.12.1", only: [:test, :dev]}
+
+      # tracking test coverage
+      {:excoveralls, "~> 0.12.1", only: [:test, :dev]},
+
+      # documentation
+      {:ex_doc, "~> 0.21.2", only: :dev},
     ]
   end
 
