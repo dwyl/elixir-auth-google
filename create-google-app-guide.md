@@ -177,3 +177,20 @@ export GOOGLE_CLIENT_SECRET=MHxv6-RGF5nheXnxh1b0LNDq
 
 Return to step 3 of the
 [README.md](https://github.com/dwyl/elixir-auth-google/blob/master/create-google-app-guide.md)
+
+
+<br />
+
+# Note
+
+When you ship your app to your Production environment,
+you will need to re-visit steps 3 & 4
+to update your app settings URL & callback
+to reflect the URl where you are deploying your app e.g:
+
+![add-heroku-app](https://user-images.githubusercontent.com/194400/70204921-32f92a00-171a-11ea-83b2-34e5eeea777b.png)
+
+In our case
+https://elixir-auth-google-demo.herokuapp.com
+and
+https://elixir-auth-google-demo.herokuapp.com/auth/google/callback
