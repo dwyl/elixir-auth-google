@@ -6,7 +6,7 @@ The _easiest_ way to add Google OAuth authentication to your Elixir Apps.
 
 ![sign-in-with-google-buttons](https://user-images.githubusercontent.com/194400/69637172-07a67900-1050-11ea-9e25-2b9e84a49d91.png)
 
-[![Build Status](https://img.shields.io/travis/dwyl/elixir-auth-google/master.svg?style=flat-square)](https://travis-ci.org/dwyl/elixir-auth-google)
+![Build Status](https://img.shields.io/travis/com/dwyl/elixir-auth-google/master?color=bright-green&style=flat-square)
 [![codecov.io](https://img.shields.io/codecov/c/github/dwyl/elixir-auth-google/master.svg?style=flat-square)](http://codecov.io/github/dwyl/elixir-auth-google?branch=master)
 ![Hex.pm](https://img.shields.io/hexpm/v/elixir_auth_google?color=brightgreen&style=flat-square)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/dwyl/elixir-auth-google/issues)
@@ -127,71 +127,118 @@ They are just here for illustration purposes.
 
 ## 3. Create a `GoogleAuthController` in your Project 📝
 
-> 🔜 Simplified instructions coming soon!
+Create a new file called
+[`lib/app_web/controllers/google_auth_controller.ex`](https://github.com/dwyl/elixir-auth-google-demo/blob/master/lib/app_web/controllers/google_auth_controller.ex)
+and add the following code:
 
-Create a new endpoint matching the `google_redirect_uri`.
-On this endpoint you can exchange the google code
-for the user's token
-and then get the user profile:
-
-```eixir
-  def index(conn, %{"code" => code}) do
-    token = ElixirAuthGoogle.get_token(code)
-    profile = ElixirAuthGoogle.get_user_profile(token["access_token"])
-    render(conn, "index.html", profile: profile)
-  en
-```
-
-Set up `:elixir_auth_google` configuration values
-`google_client_id`, `google_scope` ("profile" by default) and `google_redirect_uri` (the same as the one defined in the google application)
-
-for example in `config.exs`:
 ```elixir
-config :elixir_auth_google,
-  google_client_id: <YOUR-CLIENT-ID-HERE>,
-  google_scope: "profile",
-  google_redirect_uri: <REDIRECT_URI>,
+defmodule AppWeb.GoogleAuthController do
+  use AppWeb, :controller
+
+  @doc """
+  `index/2` handles the callback from Google Auth API redirect.
+  """
+  def index(conn, %{"code" => code}) do
+    {:ok, token} = ElixirAuthGoogle.get_token(code, conn)
+    {:ok, profile} = ElixirAuthGoogle.get_user_profile(token.access_token)
+    conn
+    |> render(:welcome, profile: profile)
+  end
+end
 ```
-
-
-> Example code:
-
+This code does 3 things:
++ Create a one-time auth `token` based on the response `code` sent by Google
+after the person authenticates.
++ Request the person's profile data from Google based on the `access_token`
++ Render a `:welcome` view displaying some profile data
+to confirm that login with Google was successful.
 
 
 ## 4. Create the `/auth/google/callback` Endpoint 📍
 
 Open your **`router.ex`** file
-and add the `/auth/google/callback` endpoint.
+and locate the section that looks like `scope "/", AppWeb do`
+
+Add the following line:
+
+```elixir
+get "/auth/google/callback", GoogleAuthController, :index
+```
+
+Sample: [lib/app_web/router.ex#L20](https://github.com/dwyl/elixir-auth-google-demo/blob/4bb616dd134f498b84f079104c0f3345769517c4/lib/app_web/router.ex#L20)
+
 
 
 ## 5. Add the "Login with Google" Button to your Template ✨
 
+In order to display the "Sign-in with Google" button in the UI,
+we need to _generate_ the URL for the button in the relevant controller,
+and pass it to the template.
 
-> Example code:
+Open the `lib/app_web/controllers/page_controller.ex` file
+and update the `index` function:
 
+From:
+```elixir
+def index(conn, _params) do
+  render(conn, "index.html")
+end
+```
+
+To:
+```elixir
+def index(conn, _params) do
+  oauth_google_url = ElixirAuthGoogle.generate_oauth_url(conn)
+  render(conn, "index.html",[oauth_google_url: oauth_google_url])
+end
+```
+
+### Update the `page/index.html.eex` Template
+
+Open the `/lib/app_web/templates/page/index.html.eex` file
+and type the following code:
+
+```html
+<section class="phx-hero">
+  <h1>Welcome to Awesome App!</h1>
+  <p>To get started, login to your Google Account: <p>
+  <a href="<%= @oauth_google_url %>">
+    <img src="https://i.imgur.com/Kagbzkq.png" alt="Sign in with Google" />
+  </a>
+</section>
+```
 
 # _Done_!
 
+The home page of the app now has a big "Sign in with Google" button:
+
+![sign-in-button](https://user-images.githubusercontent.com/194400/70202961-3c32c880-1713-11ea-9737-9121030ace06.png)
+
+When the person clicks the button,
+and authenticates with their Google Account,
+they will be returned to your App
+where you can display a "login success" message:
+
+![welcome](https://user-images.githubusercontent.com/194400/70201692-494db880-170f-11ea-9776-0ffd1fdf5a72.png)
 
 
 <br /> <br />
 
-## _Implementation_ Details 💡
+## _Even_ More Detail 💡
 
 If you want to dive a bit deeper into _understanding_ how this package works,
 You can read and grok the code in under 10 minutes:
 [`/lib/elixir_auth_google.ex`](https://github.com/dwyl/elixir-auth-google/blob/master/lib/elixir_auth_google.ex)
 
-If you are using the the **`elixir_auth_google`** package
-in a Phoenix application (_the most popular use case_),
-these implementation details might be helpful.
+We created a _basic_ demo Phoenix App,
+to show you _exactly_ how you can implement
+the **`elixir_auth_google`** package:
+https://github.com/dwyl/elixir-auth-google-demo
 
-### Generating Phoenix Session Key (`SECRET_KEY_BASE`) and Encryption Keys
-
-To generate a cryptographically secure session key,
-open your terminal, run the command **`mix phx.gen.secret`**
-and paste the resulting string
-
+And if you want/need a more complete real-world example
+including creating sessions and saving profile data to a database,
+take a look at our MVP:
+https://github.com/dwyl/app-mvp-phoenix
 
 
 <br /><br />
