@@ -208,7 +208,7 @@ and type the following code:
 </section>
 ```
 
-# _Done_!
+# _Done_! 🚀
 
 The home page of the app now has a big "Sign in with Google" button:
 
@@ -234,6 +234,8 @@ We created a _basic_ demo Phoenix App,
 to show you _exactly_ how you can implement
 the **`elixir_auth_google`** package:
 https://github.com/dwyl/elixir-auth-google-demo
+It's deployed to Heroku: https://elixir-auth-google-demo.herokuapp.com <br />
+(_no data is saved so you can play with it - and try an break it!_)
 
 And if you want/need a more complete real-world example
 including creating sessions and saving profile data to a database,
