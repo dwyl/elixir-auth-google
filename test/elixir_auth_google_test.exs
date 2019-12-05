@@ -36,8 +36,7 @@ defmodule ElixirAuthGoogleTest do
       port: 4000
     }
     {:ok, res} = ElixirAuthGoogle.get_token("ok_code", conn)
-    IO.inspect res
-    # assert  == {:ok, %{access_token: "token1"}}
+    assert res == %{access_token: "token1"}
   end
 
   test "get_user_profile/1" do
