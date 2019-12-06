@@ -38,8 +38,8 @@ defmodule ElixirAuthGoogle do
   """
   @spec generate_oauth_url(Map) :: String.t
   def generate_oauth_url(conn) do
-    client_id = Application.get_env(:elixir_auth_google, :google_client_id)
-    scope = Application.get_env(:elixir_auth_google, :google_scope ) || "profile"
+    client_id = System.get_env("GOOGLE_CLIENT_ID")
+    scope = System.get_env("GOOGLE_SCOPE") || "profile email"
     redirect_uri = generate_redirect_uri(conn)
 
     "#{@google_auth_url}&client_id=#{client_id}&scope=#{scope}&redirect_uri=#{redirect_uri}"
@@ -54,8 +54,8 @@ defmodule ElixirAuthGoogle do
   @spec get_token(String.t, Map) :: String.t
   def get_token(code, conn) do
     body = Poison.encode!(
-      %{ client_id: Application.get_env(:elixir_auth_google, :google_client_id),
-         client_secret: Application.get_env(:elixir_auth_google, :google_client_secret),
+      %{ client_id: System.get_env("GOOGLE_CLIENT_ID"),
+         client_secret: System.get_env("GOOGLE_CLIENT_SECRET"),
          redirect_uri: generate_redirect_uri(conn),
          grant_type: "authorization_code",
          code: code
