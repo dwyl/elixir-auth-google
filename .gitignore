@@ -9,3 +9,5 @@ erl_crash.dump
 /config/*.secret.exs
 .elixir_ls
 .env
+elixir_auth_google.iml
+.idea
