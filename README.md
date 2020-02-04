@@ -193,7 +193,7 @@ def index(conn, _params) do
 end
 ```
 
-### Update the `page/index.html.eex` Template
+### 5.1 Update the `page/index.html.eex` Template
 
 Open the `/lib/app_web/templates/page/index.html.eex` file
 and type the following code:
@@ -220,6 +220,111 @@ they will be returned to your App
 where you can display a "login success" message:
 
 ![welcome](https://user-images.githubusercontent.com/194400/70201692-494db880-170f-11ea-9776-0ffd1fdf5a72.png)
+
+
+<br /> <br />
+
+
+## _Optimised_ SVG+CSS Button
+
+In **step 5.1** above, we suggest using an `<img>`
+for the `Sign in with GitHub` button.
+
+But even though this image appears small **`389 × 93 px`**
+https://i.imgur.com/Kagbzkq.png it is "only" **`8kb`**:
+
+![google-button-8kb](https://user-images.githubusercontent.com/194400/73607428-cd0c1000-45ad-11ea-8639-ffc3e9a0e0a2.png)
+
+We could spend some time in a graphics editor optimising the image,
+but we _know_ we can do better by using our `CSS` skills! 💡
+
+> **Note**: This is the _official_ button provided by Google:
+[developers.google.com/identity/images/signin-assets.zip](developers.google.com/identity/images/signin-assets.zip) <br />
+So if there was any optimisation they could squeeze out of it,
+they probably would have done it before publishing the zip!
+
+The following code re-creates the `<img>`
+using the GitHub logo **`SVG`**
+and `CSS` for layout/style:
+
+```html
+<div style="display:flex; flex-direction:column; width:368px; margin-left:133px;">
+  <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
+
+  <a href="<%= @oauth_google_url %>"
+    style="display:inline-flex; align-items:center; min-height:50px;
+      background-color:#4285F4; font-family:'Roboto',sans-serif;
+      font-size:28px; color:white; text-decoration:none;
+      margin-top: 12px">
+      <div style="background-color: white; margin:2px; padding-top:18px; padding-bottom:6px; min-height:59px; width:72px">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 533.5 544.3"
+        width="52px" height="35" style="display:inline-flex; align-items:center;" >
+        <path d="M533.5 278.4c0-18.5-1.5-37.1-4.7-55.3H272.1v104.8h147c-6.1 33.8-25.7 63.7-54.4 82.7v68h87.7c51.5-47.4 81.1-117.4 81.1-200.2z" fill="#4285f4"/>
+        <path d="M272.1 544.3c73.4 0 135.3-24.1 180.4-65.7l-87.7-68c-24.4 16.6-55.9 26-92.6 26-71 0-131.2-47.9-152.8-112.3H28.9v70.1c46.2 91.9 140.3 149.9 243.2 149.9z" fill="#34a853"/>
+        <path d="M119.3 324.3c-11.4-33.8-11.4-70.4 0-104.2V150H28.9c-38.6 76.9-38.6 167.5 0 244.4l90.4-70.1z" fill="#fbbc04"/>
+        <path d="M272.1 107.7c38.8-.6 76.3 14 104.4 40.8l77.7-77.7C405 24.6 339.7-.8 272.1 0 169.2 0 75.1 58 28.9 150l90.4 70.1c21.5-64.5 81.8-112.4 152.8-112.4z" fill="#ea4335"/>
+      </svg>
+    </div>
+    <div style="margin-left: 27px;">
+      Sign in with Google
+    </div>
+  </a>
+<div>
+```
+
+> We created this from scratch using the SVG of the Google logo
+and some basic CSS. <br />
+For the "making of" journey see:
+https://github.com/dwyl/elixir-auth-google/issues/25
+
+The result looks _better_ than the `<img>` button:
+
+![img-vs-svg-8kb-1kb](https://user-images.githubusercontent.com/194400/73607841-54a84d80-45b3-11ea-9d0c-a81005a0bfde.png)
+
+It can be scaled to any screen size so it will _always_ look great! <br />
+Using http://bytesizematters.com we see that our SVG+CSS button is only **`1kb`**:
+![bytesize-matters-google-button](https://user-images.githubusercontent.com/194400/73607378-4fe09b00-45ad-11ea-9ab1-3b383c1d4516.png)
+
+
+That is an **87.5%** bandwidth saving
+on the **`8kb`** of the
+[**`.png`** button](https://github.com/dwyl/elixir-auth-google/issues/25).
+And what's _more_ it reduces the number of HTTP requests
+which means the page loads _even_ faster.
+
+This is used in the Demo app:
+[`lib/app_web/templates/page/index.html.eex`](https://github.com/dwyl/elixir-auth-google-demo/blob/4fdbeada2f13f4dd27d2372a916764ec7aad24e7/lib/app_web/templates/page/index.html.eex#L5-L26)
+
+
+### `i18n`
+
+The _biggest_ advantage of having an SVG+CSS button
+is that you can _translate_ the button text! <br />
+Since the text/copy of the button is now _just_ text in standard HTML,
+the user's web browser can _automatically_ translate it! <br />
+e.g: _French_ 🇬🇧 > 🇫🇷
+
+![google-login-french-translation](https://user-images.githubusercontent.com/194400/73607961-c03eea80-45b4-11ea-9840-5d5f02ff8a13.png)
+
+This is _much_ better UX for the **80%** of people in the world
+who do _not_ speak English _fluently_.
+The _single_ biggest engine for growth in startup companies
+is [_translating_](https://youtu.be/T9ikpoF2GH0?t=463)
+their user interface into more languages.
+Obviously don't focus on translations
+while you're building your MVP,
+but if it's no extra _work_
+to use this SVG+CSS button
+and it means the person's web browser
+can _automatically_ localise your App!
+
+### _Accessibility_
+
+The `SVG+CSS` button is more accessible than the image.
+Even thought the `<img>` had an `alt` attribute
+which is a lot better than nothing,
+the `SVG+CSS` button can be re-interpreted
+by a non-screen device and more easily transformed.
 
 
 <br /> <br />
