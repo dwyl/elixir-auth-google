@@ -2,7 +2,7 @@ defmodule ElixirAuthGoogle.MixProject do
   use Mix.Project
 
   @description "Minimalist Google OAuth Authentication for Elixir Apps"
-  @version "1.0.2"
+  @version "1.0.3"
 
   def project do
     [
@@ -34,14 +34,14 @@ defmodule ElixirAuthGoogle.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:httpoison, "~> 1.6"},
-      {:poison, "~> 4.0"},
+      {:httpoison, "~> 1.6.2"},
+      {:poison, "~> 4.0.1"},
 
       # tracking test coverage
       {:excoveralls, "~> 0.12.1", only: [:test, :dev]},
 
       # documentation
-      {:ex_doc, "~> 0.21.2", only: :dev},
+      {:ex_doc, "~> 0.21.3", only: :dev},
     ]
   end
 
