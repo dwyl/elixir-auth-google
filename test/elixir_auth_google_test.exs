@@ -30,6 +30,16 @@ defmodule ElixirAuthGoogleTest do
     assert ElixirAuthGoogle.generate_oauth_url(conn) =~ "https://accounts.google.com/o/oauth2/v2/auth?response_type=code"
   end
 
+  test "get Google login url using callback endpoint" do
+    Application.put_env(:elixir_auth_google, :google_client_id, 123)
+    conn = %{
+      host: "localhost",
+      port: 4000
+    }
+    assert ElixirAuthGoogle.generate_oauth_url(conn, "callback")
+      =~ "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=&scope=profile email&redirect_uri=http://localhost:4000/callback"
+  end
+
   test "get Google token" do
         conn = %{
       host: "localhost",

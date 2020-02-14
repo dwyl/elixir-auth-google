@@ -31,7 +31,14 @@ defmodule ElixirAuthGoogle do
   end
 
   @doc """
-  `generate_oauth_url/0` creates the Google OAuth2 URL with client_id, scope and
+  `generate_redirect_uri/2` generates the Google redirect uri based on conn and callback endpoint
+  """
+  def generate_redirect_uri(conn, callback_endpoint) when is_binary(callback_endpoint) do
+    get_baseurl_from_conn(conn) <> "/" <> callback_endpoint
+  end
+
+  @doc """
+  `generate_oauth_url/1` creates the Google OAuth2 URL with client_id, scope and
   redirect_uri which is the URL Google will redirect to when auth is successful.
   This is the URL you need to use for your "Login with Google" button.
   See step 5 of the instructions.
@@ -45,6 +52,17 @@ defmodule ElixirAuthGoogle do
     "#{@google_auth_url}&client_id=#{client_id}&scope=#{scope}&redirect_uri=#{redirect_uri}"
   end
 
+  @doc """
+  `generate_oauth_url/2` creates the Google OAuth2 URL with client_id, scope and
+  redirect_uri using the callbac_endpoint parameter
+  """
+  def generate_oauth_url(conn, callback_endpoint) do
+    client_id = System.get_env("GOOGLE_CLIENT_ID")
+    scope = System.get_env("GOOGLE_SCOPE") || "profile email"
+    redirect_uri = generate_redirect_uri(conn, callback_endpoint)
+
+    "#{@google_auth_url}&client_id=#{client_id}&scope=#{scope}&redirect_uri=#{redirect_uri}"
+  end
   @doc """
   `get_token/2` encodes the secret keys and authorization code returned by Google
   and issues an HTTP request to get a person's profile data.
