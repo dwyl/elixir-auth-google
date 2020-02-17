@@ -31,7 +31,7 @@ defmodule ElixirAuthGoogle do
   end
 
   @doc """
-  `generate_oauth_url/0` creates the Google OAuth2 URL with client_id, scope and
+  `generate_oauth_url/1` creates the Google OAuth2 URL with client_id, scope and
   redirect_uri which is the URL Google will redirect to when auth is successful.
   This is the URL you need to use for your "Login with Google" button.
   See step 5 of the instructions.
@@ -43,6 +43,13 @@ defmodule ElixirAuthGoogle do
     redirect_uri = generate_redirect_uri(conn)
 
     "#{@google_auth_url}&client_id=#{client_id}&scope=#{scope}&redirect_uri=#{redirect_uri}"
+  end
+
+  @doc """
+  Same as `generate_oauth_url/1` with `state` query parameter
+  """
+  def generate_oauth_url(conn, state) when is_binary(state) do
+    generate_oauth_url(conn) <> "&state=#{state}"
   end
 
   @doc """
