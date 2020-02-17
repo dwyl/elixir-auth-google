@@ -22,7 +22,6 @@ defmodule ElixirAuthGoogleTest do
   end
 
   test "get Google login url" do
-    Application.put_env(:elixir_auth_google, :google_client_id, 123)
     conn = %{
       host: "localhost",
       port: 4000
@@ -31,7 +30,6 @@ defmodule ElixirAuthGoogleTest do
   end
 
   test "get Google login url with state" do
-    Application.put_env(:elixir_auth_google, :google_client_id, 123)
     conn = %{
       host: "localhost",
       port: 4000
