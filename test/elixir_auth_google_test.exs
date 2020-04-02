@@ -51,7 +51,17 @@ defmodule ElixirAuthGoogleTest do
   end
 
   test "get_user_profile/1" do
-    assert ElixirAuthGoogle.get_user_profile("123") == {:ok, %{name: "dwyl"}}
+    res = %{
+      email: "nelson@gmail.com",
+      email_verified: true,
+      family_name: "Correia",
+      given_name: "Nelson",
+      locale: "en",
+      name: "Nelson Correia",
+      picture: "https://lh3.googleusercontent.com/a-/AAuE7mApnYb260YC1JY7a",
+      sub: "940732358705212133793"
+    }
+    assert ElixirAuthGoogle.get_user_profile("123") == {:ok, res}
   end
 
   test "return error with incorrect token" do

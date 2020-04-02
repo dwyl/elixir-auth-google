@@ -7,7 +7,7 @@ defmodule ElixirAuthGoogle do
   @google_token_url "https://oauth2.googleapis.com/token"
   @google_user_profile "https://www.googleapis.com/oauth2/v3/userinfo"
 
-  def inject() do
+  def inject_poison() do
     Mix.env() == :test && ElixirAuthGoogle.HTTPoisonMock || HTTPoison
   end
 
@@ -64,7 +64,7 @@ defmodule ElixirAuthGoogle do
   def get_token(code, conn) do
     env = Mix.env()
     IO.inspect(env, label: "env")
-    httpoison = inject()
+    httpoison = inject_poison()
     body = Poison.encode!(
       %{ client_id: System.get_env("GOOGLE_CLIENT_ID"),
          client_secret: System.get_env("GOOGLE_CLIENT_SECRET"),
@@ -88,7 +88,7 @@ defmodule ElixirAuthGoogle do
   """
   @spec get_user_profile(String.t) :: String.t
   def get_user_profile(token) do
-    httpoison = inject()
+    httpoison = inject_poison()
     "#{@google_user_profile}?access_token=#{token}"
     |> httpoison.get()
     |> parse_body_response()
