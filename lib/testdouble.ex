@@ -1,10 +1,7 @@
-defmodule ElixirAuthGoogle.HTTPoison.InMemory do
+defmodule ElixirAuthGoogle.HTTPoison do
   @moduledoc """
-  In-memory storage for data while it's being processed.
-  Because we are mocking the api requests in ElixirAuthGithub.HTTPoison.InMemory
-  we have a separate module to delegate the functions we use to the actual
-  HTTPoison module, so that's all we do here.
-  Note: if you have a suggestion of a better way to do this, please share!
+  This is a test double for HTTPoison which returns a mock response.
+  Please see: https://github.com/dwyl/elixir-auth-google/issues/35
   """
 
   @doc """
