@@ -1,6 +1,6 @@
-defmodule ElixirAuthGoogle.HTTPoison do
+defmodule ElixirAuthGoogle.HTTPoisonMock do
   @moduledoc """
-  This is a test double for HTTPoison which returns a mock response.
+  This is a TestDouble for HTTPoison which returns a predictable response.
   Please see: https://github.com/dwyl/elixir-auth-google/issues/35
   """
 
