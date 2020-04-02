@@ -39,7 +39,7 @@ There were already _several_ available options
 for adding Google Auth to apps on
 [hex.pm/packages?search=google](https://hex.pm/packages?search=google) <br />
 that all added _far_ too many implementation steps (complexity)
-and had incomplete documentation (**`@doc false`**) and testing. <br />
+and had incomplete docs (**`@doc false`**) and tests. <br />
 e.g:
 [github.com/googleapis/elixir-google-api](https://github.com/googleapis/elixir-google-api)
 which is a
