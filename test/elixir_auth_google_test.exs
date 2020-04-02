@@ -34,7 +34,11 @@ defmodule ElixirAuthGoogleTest do
       host: "localhost",
       port: 4000
     }
-    assert ElixirAuthGoogle.generate_oauth_url(conn, "state1") == "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=&scope=profile email&redirect_uri=http://localhost:4000/auth/google/callback&state=state1"
+    url = ElixirAuthGoogle.generate_oauth_url(conn, "state1")
+    id = System.get_env("GOOGLE_CLIENT_ID")
+    expected = "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=" <> id
+      <> "&scope=profile email&redirect_uri=http://localhost:4000/auth/google/callback&state=state1"
+    assert url == expected
   end
 
   test "get Google token" do
