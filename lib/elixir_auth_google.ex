@@ -62,9 +62,6 @@ defmodule ElixirAuthGoogle do
   """
   @spec get_token(String.t, Map) :: String.t
   def get_token(code, conn) do
-    env = Mix.env()
-    IO.inspect(env, label: "env")
-    httpoison = inject_poison()
     body = Poison.encode!(
       %{ client_id: System.get_env("GOOGLE_CLIENT_ID"),
          client_secret: System.get_env("GOOGLE_CLIENT_SECRET"),
@@ -72,10 +69,9 @@ defmodule ElixirAuthGoogle do
          grant_type: "authorization_code",
          code: code
     })
-    IO.inspect(body, label: "body")
-    httpoison.post(@google_token_url, body)
+    inject_poison().post(@google_token_url, body)
     |> parse_body_response()
-    |> IO.inspect(label: "get_token() response")
+    # |> IO.inspect(label: "get_token() response")
   end
 
   @doc """
@@ -92,7 +88,7 @@ defmodule ElixirAuthGoogle do
     "#{@google_user_profile}?access_token=#{token}"
     |> httpoison.get()
     |> parse_body_response()
-    |> IO.inspect(label: "get_user_profile() response")
+    # |> IO.inspect(label: "get_user_profile() response")
   end
 
   @doc """
