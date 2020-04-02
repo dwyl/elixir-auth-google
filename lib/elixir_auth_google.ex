@@ -3,11 +3,13 @@ defmodule ElixirAuthGoogle do
   Minimalist Google OAuth Authentication for Elixir Apps.
   Extensively tested, documented, maintained and in active use in production.
   """
-  @httpoison Mix.env() == :test && ElixirAuthGoogle.HTTPoisonMock || HTTPoison
   @google_auth_url "https://accounts.google.com/o/oauth2/v2/auth?response_type=code"
   @google_token_url "https://oauth2.googleapis.com/token"
   @google_user_profile "https://www.googleapis.com/oauth2/v3/userinfo"
 
+  def inject() do
+    Mix.env() == :test && ElixirAuthGoogle.HTTPoisonMock || HTTPoison
+  end
 
   @doc """
   `get_baseurl_from_conn/1` derives the base URL from the conn struct
@@ -62,7 +64,7 @@ defmodule ElixirAuthGoogle do
   def get_token(code, conn) do
     env = Mix.env()
     IO.inspect(env, label: "env")
-    IO.inspect(@httpoison, label: "@httpoison")
+    httpoison = inject()
     body = Poison.encode!(
       %{ client_id: System.get_env("GOOGLE_CLIENT_ID"),
          client_secret: System.get_env("GOOGLE_CLIENT_SECRET"),
@@ -71,7 +73,7 @@ defmodule ElixirAuthGoogle do
          code: code
     })
     IO.inspect(body, label: "body")
-    @httpoison.post(@google_token_url, body)
+    httpoison.post(@google_token_url, body)
     |> parse_body_response()
     |> IO.inspect(label: "get_token() response")
   end
@@ -86,8 +88,9 @@ defmodule ElixirAuthGoogle do
   """
   @spec get_user_profile(String.t) :: String.t
   def get_user_profile(token) do
+    httpoison = inject()
     "#{@google_user_profile}?access_token=#{token}"
-    |> @httpoison.get()
+    |> httpoison.get()
     |> parse_body_response()
     |> IO.inspect(label: "get_user_profile() response")
   end
