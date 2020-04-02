@@ -7,6 +7,11 @@ defmodule ElixirAuthGoogle do
   @google_token_url "https://oauth2.googleapis.com/token"
   @google_user_profile "https://www.googleapis.com/oauth2/v3/userinfo"
 
+  @doc """
+  `inject_poison/0` injects a TestDouble of HTTPoison in Test
+  so that we don't have duplicate mock in consuming apps.
+  see: https://github.com/dwyl/elixir-auth-google/issues/35
+  """
   def inject_poison() do
     Mix.env() == :test && ElixirAuthGoogle.HTTPoisonMock || HTTPoison
   end
@@ -71,7 +76,6 @@ defmodule ElixirAuthGoogle do
     })
     inject_poison().post(@google_token_url, body)
     |> parse_body_response()
-    # |> IO.inspect(label: "get_token() response")
   end
 
   @doc """
@@ -84,11 +88,9 @@ defmodule ElixirAuthGoogle do
   """
   @spec get_user_profile(String.t) :: String.t
   def get_user_profile(token) do
-    httpoison = inject_poison()
     "#{@google_user_profile}?access_token=#{token}"
-    |> httpoison.get()
+    |> inject_poison().get()
     |> parse_body_response()
-    # |> IO.inspect(label: "get_user_profile() response")
   end
 
   @doc """
