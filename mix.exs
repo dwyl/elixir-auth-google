@@ -2,7 +2,7 @@ defmodule ElixirAuthGoogle.MixProject do
   use Mix.Project
 
   @description "Minimalist Google OAuth Authentication for Elixir Apps"
-  @version "1.1.0"
+  @version "1.2.0"
 
   def project do
     [
@@ -50,7 +50,7 @@ defmodule ElixirAuthGoogle.MixProject do
       maintainers: ["dwyl"],
       licenses: ["GNU GPL v2.0"],
       links: %{github: "https://github.com/dwyl/elixir-auth-google"},
-      files: ~w(lib LICENSE mix.exs README.md .formatter.exs config/config.exs)
+      files: ~w(lib LICENSE mix.exs README.md .formatter.exs)
     ]
   end
 end
