@@ -41,7 +41,7 @@ defmodule ElixirAuthGoogle.MixProject do
       {:excoveralls, "~> 0.13.0", only: [:test, :dev]},
 
       # documentation
-      {:ex_doc, "~> 0.22.1", only: :dev}
+      {:ex_doc, "~> 0.21.3", only: :dev}
     ]
   end
 
