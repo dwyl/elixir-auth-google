@@ -33,8 +33,8 @@ defmodule ElixirAuthGoogle do
   `generate_redirect_uri/1` generates the Google redirect uri based on conn
   """
   @spec generate_redirect_uri(Map) :: String.t
-  def generate_redirect_uri(conn) do
-    get_baseurl_from_conn(conn) <> "/auth/google/callback"
+  def generate_redirect_uri(conn, callback_relative_uri) do
+    get_baseurl_from_conn(conn) <> (callback_relative_uri || "/auth/google/callback")
   end
 
   @doc """
@@ -44,10 +44,10 @@ defmodule ElixirAuthGoogle do
   See step 5 of the instructions.
   """
   @spec generate_oauth_url(Map) :: String.t
-  def generate_oauth_url(conn) do
+ def generate_oauth_url(conn, callback_relative_uri = nil) do
     client_id = System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id)
     scope = System.get_env("GOOGLE_SCOPE") || Application.get_env(:elixir_auth_google, :google_scope) || "profile email"
-    redirect_uri = generate_redirect_uri(conn)
+    redirect_uri = generate_redirect_uri(conn, callback_relative_uri)
 
     "#{@google_auth_url}&client_id=#{client_id}&scope=#{scope}&redirect_uri=#{redirect_uri}"
   end
