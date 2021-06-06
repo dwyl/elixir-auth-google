@@ -12,9 +12,6 @@ defmodule ElixirAuthGoogle.HTTPoisonMock do
     {:error, :bad_request}
   end
 
-  @doc """
-  get/1 using a dummy _url to test body decoding.
-  """
   def get(_url) do
     {:ok, %{body: Poison.encode!(
      %{
