@@ -155,28 +155,8 @@ invalidated _immediately_ after downloading. <br />
 But this is what the file looks like.
 
 
-## 6. Save the Credentials in your `.env` File
-
-Once you have the credentials for your OAuth Client,
-export them as **environment variables**
-so that your Elixir/Phoenix app can access them.
-
-> If you are new to environment variables,
-please see:
-[github.com/dwyl/learn-environment-variables](https://github.com/dwyl/learn-environment-variables)
-
-In our case we add the credentials
-to an **`.env`** (_environment variables_) file.
-
-e.g:
-
-```yml
-export GOOGLE_CLIENT_ID=631770888008-6n0oruvsm16kbkqg6u76p5cv5kfkcekt.apps.googleusercontent.com
-export GOOGLE_CLIENT_SECRET=MHxv6-RGF5nheXnxh1b0LNDq
-```
-
 Return to step 3 of the
-[README.md](https://github.com/dwyl/elixir-auth-google/blob/master/create-google-app-guide.md)
+[README.md](https://github.com/dwyl/elixir-auth-google/blob/master/README.md)
 
 
 <br />

@@ -44,9 +44,9 @@ defmodule ElixirAuthGoogle do
   See step 5 of the instructions.
   """
   @spec generate_oauth_url(Map) :: String.t
-  def generate_oauth_url(conn) do
-    client_id = System.get_env("GOOGLE_CLIENT_ID")
-    scope = System.get_env("GOOGLE_SCOPE") || "profile email"
+ def generate_oauth_url(conn) do
+    client_id = System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id)
+    scope = System.get_env("GOOGLE_SCOPE") || Application.get_env(:elixir_auth_google, :google_scope) || "profile email"
     redirect_uri = generate_redirect_uri(conn)
 
     "#{@google_auth_url}&client_id=#{client_id}&scope=#{scope}&redirect_uri=#{redirect_uri}"
@@ -68,8 +68,8 @@ defmodule ElixirAuthGoogle do
   @spec get_token(String.t, Map) :: String.t
   def get_token(code, conn) do
     body = Poison.encode!(
-      %{ client_id: System.get_env("GOOGLE_CLIENT_ID"),
-         client_secret: System.get_env("GOOGLE_CLIENT_SECRET"),
+      %{ client_id: System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id),
+         client_secret: System.get_env("GOOGLE_CLIENT_SECRET") || Application.get_env(:elixir_auth_google, :client_secret),
          redirect_uri: generate_redirect_uri(conn),
          grant_type: "authorization_code",
          code: code

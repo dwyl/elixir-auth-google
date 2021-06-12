@@ -100,7 +100,7 @@ to _download_ the dependencies.
 Create a Google Application if you don't already have one,
 generate the OAuth2 Credentials for the application
 and save the credentials as environment variables
-accessible by your app.
+accessible by your app, or put them in your config file.
 
 > **Note**: There are a few steps for creating a set of Google APIs credentials,
 so if you don't already have a Google App,
@@ -113,19 +113,27 @@ And if you get stuck, ask for
 [help!](https://github.com/dwyl/elixir-auth-google/issues)
 
 
-By the end of this step
-you should have these two environment variables set:
+## 3. Setup CLIENT_ID and CLIENT_SECRET in your project 
 
-```yml
-GOOGLE_CLIENT_ID=631770888008-6n0oruvsm16kbkqg6u76p5cv5kfkcekt.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=MHxv6-RGF5nheXnxh1b0LNDq
+You may either add those keys as environment variables or put them in the config:
+
 ```
+export GOOGLE_CLIENT_ID=631770888008-6n0oruvsm16kbkqg6u76p5cv5kfkcekt.apps.googleusercontent.com
+export GOOGLE_CLIENT_SECRET=MHxv6-RGF5nheXnxh1b0LNDq
+```
+Or add the following in the config file:
 
+```elixir
+config :elixir_auth_google,
+  client_id: "631770888008-6n0oruvsm16kbkqg6u76p5cv5kfkcekt.apps.googleusercontent.com",
+  client_secret: "MHxv6-RGF5nheXnxh1b0LNDq"
+
+```
 > ⚠️ Don't worry, these keys aren't valid.
 They are just here for illustration purposes.
 
 
-## 3. Create a `GoogleAuthController` in your Project 📝
+## 4. Create a `GoogleAuthController` in your Project 📝
 
 Create a new file called
 [`lib/app_web/controllers/google_auth_controller.ex`](https://github.com/dwyl/elixir-auth-google-demo/blob/master/lib/app_web/controllers/google_auth_controller.ex)
@@ -154,7 +162,7 @@ after the person authenticates.
 to confirm that login with Google was successful.
 
 
-## 4. Create the `/auth/google/callback` Endpoint 📍
+## 5. Create the `/auth/google/callback` Endpoint 📍
 
 Open your **`router.ex`** file
 and locate the section that looks like `scope "/", AppWeb do`
@@ -169,7 +177,7 @@ Sample: [lib/app_web/router.ex#L20](https://github.com/dwyl/elixir-auth-google-d
 
 
 
-## 5. Add the "Login with Google" Button to your Template ✨
+## 6. Add the "Login with Google" Button to your Template ✨
 
 In order to display the "Sign-in with Google" button in the UI,
 we need to _generate_ the URL for the button in the relevant controller,
@@ -193,7 +201,7 @@ def index(conn, _params) do
 end
 ```
 
-### 5.1 Update the `page/index.html.eex` Template
+### 6.1 Update the `page/index.html.eex` Template
 
 Open the `/lib/app_web/templates/page/index.html.eex` file
 and type the following code:
@@ -227,7 +235,7 @@ where you can display a "login success" message:
 
 ## _Optimised_ SVG+CSS Button
 
-In **step 5.1** above, we suggest using an `<img>`
+In **step 6.1** above, we suggest using an `<img>`
 for the `Sign in with GitHub` button.
 
 But even though this image appears small **`389 × 93 px`**
