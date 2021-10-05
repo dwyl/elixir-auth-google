@@ -13,7 +13,6 @@ defmodule ElixirAuthGoogle.MixProject do
       deps: deps(),
       description: @description,
       package: package(),
-
       # coverage
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
