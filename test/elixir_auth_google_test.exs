@@ -36,6 +36,10 @@ defmodule ElixirAuthGoogleTest do
     }
     url = ElixirAuthGoogle.generate_oauth_url(conn, "state1")
     id = System.get_env("GOOGLE_CLIENT_ID")
+    id_from_config =  Application.get_env(:elixir_auth_google, :client_id)
+
+    assert id == id_from_config
+
     expected = "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=" <> id
       <> "&scope=profile email&redirect_uri=http://localhost:4000/auth/google/callback&state=state1"
     assert url == expected
