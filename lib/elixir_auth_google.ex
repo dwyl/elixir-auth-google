@@ -7,14 +7,14 @@ defmodule ElixirAuthGoogle do
   @google_token_url "https://oauth2.googleapis.com/token"
   @google_user_profile "https://www.googleapis.com/oauth2/v3/userinfo"
 
+  @httpoison Mix.env() == :test && ElixirAuthGoogle.HTTPoisonMock || HTTPoison
+
   @doc """
   `inject_poison/0` injects a TestDouble of HTTPoison in Test
   so that we don't have duplicate mock in consuming apps.
   see: https://github.com/dwyl/elixir-auth-google/issues/35
   """
-  def inject_poison() do
-    Mix.env() == :test && ElixirAuthGoogle.HTTPoisonMock || HTTPoison
-  end
+  def inject_poison(), do: @httpoison
 
   @doc """
   `get_baseurl_from_conn/1` derives the base URL from the conn struct
