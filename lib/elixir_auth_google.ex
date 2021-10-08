@@ -67,7 +67,7 @@ defmodule ElixirAuthGoogle do
   """
   @spec get_token(String.t, Map) :: String.t
   def get_token(code, conn) do
-    body = Poison.encode!(
+    body = Jason.encode!(
       %{ client_id: System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id),
          client_secret: System.get_env("GOOGLE_CLIENT_SECRET") || Application.get_env(:elixir_auth_google, :client_secret),
          redirect_uri: generate_redirect_uri(conn),
@@ -104,7 +104,7 @@ defmodule ElixirAuthGoogle do
     if body == nil do
       {:error, :no_body}
     else # make keys of map atoms for easier access in templates
-      {:ok, str_key_map} = Poison.decode(body)
+      {:ok, str_key_map} = Jason.decode(body)
       atom_key_map = for {key, val} <- str_key_map, into: %{},
         do: {String.to_atom(key), val}
       {:ok, atom_key_map}
