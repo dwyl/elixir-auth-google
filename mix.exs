@@ -2,7 +2,7 @@ defmodule ElixirAuthGoogle.MixProject do
   use Mix.Project
 
   @description "Minimalist Google OAuth Authentication for Elixir Apps"
-  @version "1.5.1"
+  @version "1.6.0"
 
   def project do
     [
