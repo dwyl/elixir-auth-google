@@ -7,7 +7,7 @@ defmodule ElixirAuthGoogle do
   @google_token_url "https://oauth2.googleapis.com/token"
   @google_user_profile "https://www.googleapis.com/oauth2/v3/userinfo"
 
-  @httpoison Mix.env() == :test && ElixirAuthGoogle.HTTPoisonMock || HTTPoison
+  @httpoison Application.get_env(:elixir_auth_google, :httpoison_mock) && ElixirAuthGoogle.HTTPoisonMock || HTTPoison
 
   @doc """
   `inject_poison/0` injects a TestDouble of HTTPoison in Test
