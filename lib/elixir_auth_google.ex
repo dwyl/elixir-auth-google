@@ -9,6 +9,8 @@ defmodule ElixirAuthGoogle do
 
   @httpoison Application.get_env(:elixir_auth_google, :httpoison_mock) && ElixirAuthGoogle.HTTPoisonMock || HTTPoison
 
+  @type conn :: map
+
   @doc """
   `inject_poison/0` injects a TestDouble of HTTPoison in Test
   so that we don't have duplicate mock in consuming apps.
@@ -19,7 +21,7 @@ defmodule ElixirAuthGoogle do
   @doc """
   `get_baseurl_from_conn/1` derives the base URL from the conn struct
   """
-  @spec get_baseurl_from_conn(Map) :: String.t
+  @spec get_baseurl_from_conn(conn) :: String.t
   def get_baseurl_from_conn(%{host: h, port: p}) when h == "localhost" do
     "http://#{h}:#{p}"
   end
@@ -32,7 +34,7 @@ defmodule ElixirAuthGoogle do
   @doc """
   `generate_redirect_uri/1` generates the Google redirect uri based on conn
   """
-  @spec generate_redirect_uri(Map) :: String.t
+  @spec generate_redirect_uri(conn) :: String.t
   def generate_redirect_uri(conn) do
     get_baseurl_from_conn(conn) <> "/auth/google/callback"
   end
@@ -43,7 +45,7 @@ defmodule ElixirAuthGoogle do
   This is the URL you need to use for your "Login with Google" button.
   See step 5 of the instructions.
   """
-  @spec generate_oauth_url(Map) :: String.t
+  @spec generate_oauth_url(conn) :: String.t
   def generate_oauth_url(conn) do
     query = %{
       client_id: System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id),
@@ -70,7 +72,7 @@ defmodule ElixirAuthGoogle do
 
   **TODO**: we still need to handle the various failure conditions >> issues/16
   """
-  @spec get_token(String.t, Map) :: String.t
+  @spec get_token(String.t, conn) :: {:ok, map} | {:error, any}
   def get_token(code, conn) do
     body = Jason.encode!(
       %{ client_id: System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id),
@@ -91,7 +93,7 @@ defmodule ElixirAuthGoogle do
   **TODO**: we still need to handle the various failure conditions >> issues/16
   At this point the types of errors we expect are HTTP 40x/50x responses.
   """
-  @spec get_user_profile(String.t) :: String.t
+  @spec get_user_profile(String.t) :: {:ok, map} | {:error, any}
   def get_user_profile(token) do
     params = URI.encode_query(%{access_token: token}, :rfc3986)
 
@@ -104,7 +106,7 @@ defmodule ElixirAuthGoogle do
   `parse_body_response/1` parses the response returned by Google
   so your app can use the resulting JSON.
   """
-  @spec parse_body_response({atom, String.t}) :: String.t
+  @spec parse_body_response({atom, String.t} | {:error, any}) :: {:ok, map} | {:error, any}
   def parse_body_response({:error, err}), do: {:error, err}
   def parse_body_response({:ok, response}) do
     body = Map.get(response, :body)
