@@ -6,6 +6,7 @@ defmodule ElixirAuthGoogle do
   @google_auth_url "https://accounts.google.com/o/oauth2/v2/auth?response_type=code"
   @google_token_url "https://oauth2.googleapis.com/token"
   @google_user_profile "https://www.googleapis.com/oauth2/v3/userinfo"
+  @default_scope "profile email"
 
   @httpoison Application.get_env(:elixir_auth_google, :httpoison_mock) && ElixirAuthGoogle.HTTPoisonMock || HTTPoison
 
@@ -48,8 +49,8 @@ defmodule ElixirAuthGoogle do
   @spec generate_oauth_url(conn) :: String.t
   def generate_oauth_url(conn) do
     query = %{
-      client_id: System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id),
-      scope: System.get_env("GOOGLE_SCOPE") || Application.get_env(:elixir_auth_google, :google_scope) || "profile email",
+      client_id: google_client_id(),
+      scope: google_scope(),
       redirect_uri: generate_redirect_uri(conn)
     }
 
@@ -75,8 +76,8 @@ defmodule ElixirAuthGoogle do
   @spec get_token(String.t, conn) :: {:ok, map} | {:error, any}
   def get_token(code, conn) do
     body = Jason.encode!(
-      %{ client_id: System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id),
-         client_secret: System.get_env("GOOGLE_CLIENT_SECRET") || Application.get_env(:elixir_auth_google, :client_secret),
+      %{ client_id: google_client_id(),
+         client_secret: google_client_secret(),
          redirect_uri: generate_redirect_uri(conn),
          grant_type: "authorization_code",
          code: code
@@ -118,5 +119,17 @@ defmodule ElixirAuthGoogle do
         do: {String.to_atom(key), val}
       {:ok, atom_key_map}
     end # https://stackoverflow.com/questions/31990134
+  end
+
+  defp google_client_id do
+    System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id)
+  end
+
+  defp google_client_secret do
+    System.get_env("GOOGLE_CLIENT_SECRET") || Application.get_env(:elixir_auth_google, :client_secret)
+  end
+
+  defp google_scope do
+    System.get_env("GOOGLE_SCOPE") || Application.get_env(:elixir_auth_google, :google_scope) || @default_scope
   end
 end
