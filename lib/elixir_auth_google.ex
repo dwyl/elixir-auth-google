@@ -44,19 +44,24 @@ defmodule ElixirAuthGoogle do
   See step 5 of the instructions.
   """
   @spec generate_oauth_url(Map) :: String.t
- def generate_oauth_url(conn) do
-    client_id = System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id)
-    scope = System.get_env("GOOGLE_SCOPE") || Application.get_env(:elixir_auth_google, :google_scope) || "profile email"
-    redirect_uri = generate_redirect_uri(conn)
+  def generate_oauth_url(conn) do
+    query = %{
+      client_id: System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id),
+      scope: System.get_env("GOOGLE_SCOPE") || Application.get_env(:elixir_auth_google, :google_scope) || "profile email",
+      redirect_uri: generate_redirect_uri(conn)
+    }
 
-    "#{@google_auth_url}&client_id=#{client_id}&scope=#{scope}&redirect_uri=#{redirect_uri}"
+    params = URI.encode_query(query, :rfc3986)
+
+    "#{@google_auth_url}&#{params}"
   end
 
   @doc """
   Same as `generate_oauth_url/1` with `state` query parameter
   """
   def generate_oauth_url(conn, state) when is_binary(state) do
-    generate_oauth_url(conn) <> "&state=#{state}"
+    params = URI.encode_query(%{state: state}, :rfc3986)
+    generate_oauth_url(conn) <> "&#{params}"
   end
 
   @doc """
@@ -88,7 +93,9 @@ defmodule ElixirAuthGoogle do
   """
   @spec get_user_profile(String.t) :: String.t
   def get_user_profile(token) do
-    "#{@google_user_profile}?access_token=#{token}"
+    params = URI.encode_query(%{access_token: token}, :rfc3986)
+
+    "#{@google_user_profile}?#{params}"
     |> inject_poison().get()
     |> parse_body_response()
   end
