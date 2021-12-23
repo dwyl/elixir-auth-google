@@ -84,7 +84,7 @@ Add a line for **`:elixir_auth_google`** in the **`deps`** list:
 ```elixir
 def deps do
   [
-    {:elixir_auth_google, "~> 1.6.0"}
+    {:elixir_auth_google, "~> 1.6.2"}
   ]
 end
 ```
@@ -229,6 +229,33 @@ where you can display a "login success" message:
 
 ![welcome](https://user-images.githubusercontent.com/194400/70201692-494db880-170f-11ea-9776-0ffd1fdf5a72.png)
 
+
+### _Optional_: Scopes
+
+Most of the time you will only want/need 
+the person's email address and profile data 
+when authenticating with your App.
+In the cases where you need more specific access
+to a Google service, you will need to specify the exact scopes.
+See:
+https://developers.google.com/identity/protocols/oauth2/scopes
+
+Once you know the scope(s) your App needs access to,
+simply define them using an environment variable, e.g:
+
+```
+GOOGLE_SCOPE=email contacts photoslibrary
+```
+
+***or*** you can set them as a config variable if you prefer:
+
+```
+config :elixir_auth_google,
+  :google_scope: "email contacts photoslibrary"
+```
+
+With that configured, your App will gain access to the requested services
+once the person authenticates/authorizes. 
 
 <br /> <br />
 
