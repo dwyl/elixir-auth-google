@@ -10,7 +10,7 @@ The _easiest_ way to add Google OAuth authentication to your Elixir Apps.
 [![codecov.io](https://img.shields.io/codecov/c/github/dwyl/elixir-auth-google/master.svg?style=flat-square)](http://codecov.io/github/dwyl/elixir-auth-google?branch=master)
 [![Hex.pm](https://img.shields.io/hexpm/v/elixir_auth_google?color=brightgreen&style=flat-square)](https://hex.pm/packages/elixir_auth_google)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/dwyl/elixir-auth-google/issues)
-[![HitCount](http://hits.dwyl.io/dwyl/elixir-auth-google.svg)](http://hits.dwyl.io/dwyl/elixir-auth-google)
+[![HitCount](http://hits.dwyl.com/dwyl/elixir-auth-google.svg)](http://hits.dwyl.com/dwyl/elixir-auth-google)
 <!-- [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg?style=flat-square)](https://GitHub.com/TutorialsAndroid/GButton) -->
 
 </div>

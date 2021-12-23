@@ -6,8 +6,11 @@ defmodule ElixirAuthGoogle do
   @google_auth_url "https://accounts.google.com/o/oauth2/v2/auth?response_type=code"
   @google_token_url "https://oauth2.googleapis.com/token"
   @google_user_profile "https://www.googleapis.com/oauth2/v3/userinfo"
+  @default_scope "profile email"
 
   @httpoison Application.get_env(:elixir_auth_google, :httpoison_mock) && ElixirAuthGoogle.HTTPoisonMock || HTTPoison
+
+  @type conn :: map
 
   @doc """
   `inject_poison/0` injects a TestDouble of HTTPoison in Test
@@ -19,7 +22,7 @@ defmodule ElixirAuthGoogle do
   @doc """
   `get_baseurl_from_conn/1` derives the base URL from the conn struct
   """
-  @spec get_baseurl_from_conn(Map) :: String.t
+  @spec get_baseurl_from_conn(conn) :: String.t
   def get_baseurl_from_conn(%{host: h, port: p}) when h == "localhost" do
     "http://#{h}:#{p}"
   end
@@ -32,7 +35,7 @@ defmodule ElixirAuthGoogle do
   @doc """
   `generate_redirect_uri/1` generates the Google redirect uri based on conn
   """
-  @spec generate_redirect_uri(Map) :: String.t
+  @spec generate_redirect_uri(conn) :: String.t
   def generate_redirect_uri(conn) do
     get_baseurl_from_conn(conn) <> "/auth/google/callback"
   end
@@ -43,20 +46,25 @@ defmodule ElixirAuthGoogle do
   This is the URL you need to use for your "Login with Google" button.
   See step 5 of the instructions.
   """
-  @spec generate_oauth_url(Map) :: String.t
- def generate_oauth_url(conn) do
-    client_id = System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id)
-    scope = System.get_env("GOOGLE_SCOPE") || Application.get_env(:elixir_auth_google, :google_scope) || "profile email"
-    redirect_uri = generate_redirect_uri(conn)
+  @spec generate_oauth_url(conn) :: String.t
+  def generate_oauth_url(conn) do
+    query = %{
+      client_id: google_client_id(),
+      scope: google_scope(),
+      redirect_uri: generate_redirect_uri(conn)
+    }
 
-    "#{@google_auth_url}&client_id=#{client_id}&scope=#{scope}&redirect_uri=#{redirect_uri}"
+    params = URI.encode_query(query, :rfc3986)
+
+    "#{@google_auth_url}&#{params}"
   end
 
   @doc """
   Same as `generate_oauth_url/1` with `state` query parameter
   """
   def generate_oauth_url(conn, state) when is_binary(state) do
-    generate_oauth_url(conn) <> "&state=#{state}"
+    params = URI.encode_query(%{state: state}, :rfc3986)
+    generate_oauth_url(conn) <> "&#{params}"
   end
 
   @doc """
@@ -65,11 +73,11 @@ defmodule ElixirAuthGoogle do
 
   **TODO**: we still need to handle the various failure conditions >> issues/16
   """
-  @spec get_token(String.t, Map) :: String.t
+  @spec get_token(String.t, conn) :: {:ok, map} | {:error, any}
   def get_token(code, conn) do
     body = Jason.encode!(
-      %{ client_id: System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id),
-         client_secret: System.get_env("GOOGLE_CLIENT_SECRET") || Application.get_env(:elixir_auth_google, :client_secret),
+      %{ client_id: google_client_id(),
+         client_secret: google_client_secret(),
          redirect_uri: generate_redirect_uri(conn),
          grant_type: "authorization_code",
          code: code
@@ -86,9 +94,11 @@ defmodule ElixirAuthGoogle do
   **TODO**: we still need to handle the various failure conditions >> issues/16
   At this point the types of errors we expect are HTTP 40x/50x responses.
   """
-  @spec get_user_profile(String.t) :: String.t
+  @spec get_user_profile(String.t) :: {:ok, map} | {:error, any}
   def get_user_profile(token) do
-    "#{@google_user_profile}?access_token=#{token}"
+    params = URI.encode_query(%{access_token: token}, :rfc3986)
+
+    "#{@google_user_profile}?#{params}"
     |> inject_poison().get()
     |> parse_body_response()
   end
@@ -97,7 +107,7 @@ defmodule ElixirAuthGoogle do
   `parse_body_response/1` parses the response returned by Google
   so your app can use the resulting JSON.
   """
-  @spec parse_body_response({atom, String.t}) :: String.t
+  @spec parse_body_response({atom, String.t} | {:error, any}) :: {:ok, map} | {:error, any}
   def parse_body_response({:error, err}), do: {:error, err}
   def parse_body_response({:ok, response}) do
     body = Map.get(response, :body)
@@ -109,5 +119,17 @@ defmodule ElixirAuthGoogle do
         do: {String.to_atom(key), val}
       {:ok, atom_key_map}
     end # https://stackoverflow.com/questions/31990134
+  end
+
+  defp google_client_id do
+    System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id)
+  end
+
+  defp google_client_secret do
+    System.get_env("GOOGLE_CLIENT_SECRET") || Application.get_env(:elixir_auth_google, :client_secret)
+  end
+
+  defp google_scope do
+    System.get_env("GOOGLE_SCOPE") || Application.get_env(:elixir_auth_google, :google_scope) || @default_scope
   end
 end

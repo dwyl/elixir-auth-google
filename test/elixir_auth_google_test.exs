@@ -41,7 +41,7 @@ defmodule ElixirAuthGoogleTest do
     assert id == id_from_config
 
     expected = "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=" <> id
-      <> "&scope=profile email&redirect_uri=http://localhost:4000/auth/google/callback&state=state1"
+      <> "&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fauth%2Fgoogle%2Fcallback&scope=profile%20email&state=state1"
     assert url == expected
   end
 
