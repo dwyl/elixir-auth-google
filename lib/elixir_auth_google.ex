@@ -46,17 +46,25 @@ defmodule ElixirAuthGoogle do
   This is the URL you need to use for your "Login with Google" button.
   See step 5 of the instructions.
   """
+  @spec generate_oauth_url() :: String.t
   @spec generate_oauth_url(conn) :: String.t
-  def generate_oauth_url(conn) do
+  def generate_oauth_url(), do: google_redirect_uri() |> generate_oauth_url()
+  def generate_oauth_url(redirect_uri) when is_binary(redirect_uri) do
     query = %{
       client_id: google_client_id(),
       scope: google_scope(),
-      redirect_uri: generate_redirect_uri(conn)
+      redirect_uri: redirect_uri
     }
 
     params = URI.encode_query(query, :rfc3986)
 
     "#{@google_auth_url}&#{params}"
+  end
+
+  def generate_oauth_url(conn) do
+    conn
+    |> generate_redirect_uri()
+    |> generate_oauth_url()
   end
 
   @doc """
@@ -73,17 +81,26 @@ defmodule ElixirAuthGoogle do
 
   **TODO**: we still need to handle the various failure conditions >> issues/16
   """
+  @spec get_token(conn) :: {:ok, map} | {:error, any}
+  @spec get_token(String.t, Strint.t) :: {:ok, map} | {:error, any}
   @spec get_token(String.t, conn) :: {:ok, map} | {:error, any}
-  def get_token(code, conn) do
+  def get_token(code) when is_binary(code), do: google_redirect_uri() |> get_token(code)
+  def get_token(redirect_uri, code) when is_binary(code) do
     body = Jason.encode!(
       %{ client_id: google_client_id(),
          client_secret: google_client_secret(),
-         redirect_uri: generate_redirect_uri(conn),
+         redirect_uri: redirect_uri,
          grant_type: "authorization_code",
          code: code
     })
     inject_poison().post(@google_token_url, body)
     |> parse_body_response()
+  end
+
+  def get_token(code, conn) do
+    conn
+    |> generate_redirect_uri()
+    |> get_token(code)
   end
 
   @doc """
@@ -127,6 +144,10 @@ defmodule ElixirAuthGoogle do
 
   defp google_client_secret do
     System.get_env("GOOGLE_CLIENT_SECRET") || Application.get_env(:elixir_auth_google, :client_secret)
+  end
+
+  defp google_redirect_uri do
+    System.get_env("GOOGLE_REDIRECT_URI") || Application.get_env(:elixir_auth_google, :redirect_uri) || raise "Redirect URI not set"
   end
 
   defp google_scope do
