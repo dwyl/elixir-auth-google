@@ -9,7 +9,7 @@ defmodule ElixirAuthGoogle do
   @default_scope "profile email"
   @default_callback_path "/auth/google/callback"
 
-  @httpoison (Application.get_env(:elixir_auth_google, :httpoison_mock) &&
+  @httpoison (Application.compile_env(:elixir_auth_google, :httpoison_mock) &&
                 ElixirAuthGoogle.HTTPoisonMock) || HTTPoison
 
   @type conn :: map
@@ -19,7 +19,7 @@ defmodule ElixirAuthGoogle do
   so that we don't have duplicate mock in consuming apps.
   see: https://github.com/dwyl/elixir-auth-google/issues/35
   """
-  def inject_poison(), do: @httpoison
+  def inject_poison, do: @httpoison
 
   @doc """
   `get_baseurl_from_conn/1` derives the base URL from the conn struct
