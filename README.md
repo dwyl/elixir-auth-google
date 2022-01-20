@@ -304,7 +304,7 @@ and `CSS` for layout/style:
       Sign in with Google
     </div>
   </a>
-<div>
+</div>
 ```
 
 > We created this from scratch using the SVG of the Google logo
