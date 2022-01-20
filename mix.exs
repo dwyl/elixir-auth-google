@@ -8,7 +8,7 @@ defmodule ElixirAuthGoogle.MixProject do
     [
       app: :elixir_auth_google,
       version: @version,
-      elixir: "~> 1.12.3",
+      elixir: ">= 1.12.3",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       description: @description,
@@ -38,6 +38,8 @@ defmodule ElixirAuthGoogle.MixProject do
 
       # tracking test coverage
       {:excoveralls, "~> 0.14.1", only: [:test, :dev]},
+      # mock stuffs in test
+      {:mock, "~> 0.3.0", only: :test},
 
       # documentation
       {:ex_doc, "~> 0.25.3", only: :dev}
