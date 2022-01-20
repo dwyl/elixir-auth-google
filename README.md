@@ -127,7 +127,7 @@ Or add the following in the config file:
 config :elixir_auth_google,
   client_id: "631770888008-6n0oruvsm16kbkqg6u76p5cv5kfkcekt.apps.googleusercontent.com",
   client_secret: "MHxv6-RGF5nheXnxh1b0LNDq"
-  # custom callback path, don't forget missing coma in previous line
+  # custom callback path, don't forget missing comma in previous line
   # callback_path: "/google/oauth2_callback"
 
 ```
