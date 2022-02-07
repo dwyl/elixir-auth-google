@@ -84,7 +84,7 @@ Add a line for **`:elixir_auth_google`** in the **`deps`** list:
 ```elixir
 def deps do
   [
-    {:elixir_auth_google, "~> 1.6.2"}
+    {:elixir_auth_google, "~> 1.6.3"}
   ]
 end
 ```
@@ -113,7 +113,7 @@ And if you get stuck, ask for
 [help!](https://github.com/dwyl/elixir-auth-google/issues)
 
 
-## 3. Setup CLIENT_ID and CLIENT_SECRET in your project 
+## 3. Setup CLIENT_ID and CLIENT_SECRET in your project
 
 You may either add those keys as environment variables or put them in the config:
 
@@ -248,8 +248,8 @@ where you can display a "login success" message:
 
 ### _Optional_: Scopes
 
-Most of the time you will only want/need 
-the person's email address and profile data 
+Most of the time you will only want/need
+the person's email address and profile data
 when authenticating with your App.
 In the cases where you need more specific access
 to a Google service, you will need to specify the exact scopes.
@@ -271,7 +271,7 @@ config :elixir_auth_google,
 ```
 
 With that configured, your App will gain access to the requested services
-once the person authenticates/authorizes. 
+once the person authenticates/authorizes.
 
 <br /> <br />
 
