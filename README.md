@@ -127,8 +127,6 @@ Or add the following in the config file:
 config :elixir_auth_google,
   client_id: "631770888008-6n0oruvsm16kbkqg6u76p5cv5kfkcekt.apps.googleusercontent.com",
   client_secret: "MHxv6-RGF5nheXnxh1b0LNDq"
-  # custom callback path, don't forget missing comma in previous line
-  # callback_path: "/google/oauth2_callback"
 
 ```
 > ⚠️ Don't worry, these keys aren't valid.
@@ -177,7 +175,23 @@ get "/auth/google/callback", GoogleAuthController, :index
 
 Sample: [lib/app_web/router.ex#L20](https://github.com/dwyl/elixir-auth-google-demo/blob/4bb616dd134f498b84f079104c0f3345769517c4/lib/app_web/router.ex#L20)
 
+### Different callback url?
 
+You can specify the env var
+
+```
+export GOOGLE_CALLBACK_PATH=/myauth/google_callback
+```
+
+or add it in the configuration
+
+Or add the following in the config file:
+
+```elixir
+config :elixir_auth_google,
+  # ...
+  callback_path: "/myauth/google_callback"
+```
 
 ## 6. Add the "Login with Google" Button to your Template ✨
 
