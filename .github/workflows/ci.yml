@@ -1,0 +1,27 @@
+# create this in .github/workflows/ci.yml
+on: push
+
+jobs:
+  test:
+    name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    runs-on: ubuntu-latest
+    env:
+      MIX_ENV: test
+    strategy:
+      matrix:
+        elixir: [ 1.11.0, 1.12.0 , 1.13.0]
+        otp: [ 23.0.0, 24.0.0 ]
+        exclude:
+          - elixir: 1.11.0
+            otp: 24.0.0
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: '24.1'
+          elixir-version: '1.12.2'
+      - run: mix deps.get
+      - run: mix format --check-formatted
+      - run: mix test
+      - run: mix credo --strict
