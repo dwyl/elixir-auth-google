@@ -7,8 +7,10 @@ defmodule ElixirAuthGoogle do
   @google_token_url "https://oauth2.googleapis.com/token"
   @google_user_profile "https://www.googleapis.com/oauth2/v3/userinfo"
   @default_scope "profile email"
+  @default_callback_path "/auth/google/callback"
 
-  @httpoison Application.get_env(:elixir_auth_google, :httpoison_mock) && ElixirAuthGoogle.HTTPoisonMock || HTTPoison
+  @httpoison (Application.compile_env(:elixir_auth_google, :httpoison_mock) &&
+                ElixirAuthGoogle.HTTPoisonMock) || HTTPoison
 
   @type conn :: map
 
@@ -17,27 +19,26 @@ defmodule ElixirAuthGoogle do
   so that we don't have duplicate mock in consuming apps.
   see: https://github.com/dwyl/elixir-auth-google/issues/35
   """
-  def inject_poison(), do: @httpoison
+  def inject_poison, do: @httpoison
 
   @doc """
   `get_baseurl_from_conn/1` derives the base URL from the conn struct
   """
-  @spec get_baseurl_from_conn(conn) :: String.t
+  @spec get_baseurl_from_conn(conn) :: String.t()
   def get_baseurl_from_conn(%{host: h, port: p}) when h == "localhost" do
     "http://#{h}:#{p}"
   end
 
   def get_baseurl_from_conn(%{host: h}) do
-     "https://#{h}"
+    "https://#{h}"
   end
-
 
   @doc """
   `generate_redirect_uri/1` generates the Google redirect uri based on conn
   """
-  @spec generate_redirect_uri(conn) :: String.t
+  @spec generate_redirect_uri(conn) :: String.t()
   def generate_redirect_uri(conn) do
-    get_baseurl_from_conn(conn) <> "/auth/google/callback"
+    get_baseurl_from_conn(conn) <> get_app_callback_url()
   end
 
   @doc """
@@ -46,25 +47,17 @@ defmodule ElixirAuthGoogle do
   This is the URL you need to use for your "Login with Google" button.
   See step 5 of the instructions.
   """
-  @spec generate_oauth_url() :: String.t
-  @spec generate_oauth_url(conn) :: String.t
-  def generate_oauth_url(), do: google_redirect_uri() |> generate_oauth_url()
-  def generate_oauth_url(redirect_uri) when is_binary(redirect_uri) do
+  @spec generate_oauth_url(conn) :: String.t()
+  def generate_oauth_url(conn) do
     query = %{
       client_id: google_client_id(),
       scope: google_scope(),
-      redirect_uri: redirect_uri
+      redirect_uri: generate_redirect_uri(conn)
     }
 
     params = URI.encode_query(query, :rfc3986)
 
     "#{@google_auth_url}&#{params}"
-  end
-
-  def generate_oauth_url(conn) do
-    conn
-    |> generate_redirect_uri()
-    |> generate_oauth_url()
   end
 
   @doc """
@@ -81,26 +74,19 @@ defmodule ElixirAuthGoogle do
 
   **TODO**: we still need to handle the various failure conditions >> issues/16
   """
-  @spec get_token(conn) :: {:ok, map} | {:error, any}
-  @spec get_token(String.t, Strint.t) :: {:ok, map} | {:error, any}
-  @spec get_token(String.t, conn) :: {:ok, map} | {:error, any}
-  def get_token(code) when is_binary(code), do: google_redirect_uri() |> get_token(code)
-  def get_token(redirect_uri, code) when is_binary(code) do
-    body = Jason.encode!(
-      %{ client_id: google_client_id(),
-         client_secret: google_client_secret(),
-         redirect_uri: redirect_uri,
-         grant_type: "authorization_code",
-         code: code
-    })
+  @spec get_token(String.t(), conn) :: {:ok, map} | {:error, any}
+  def get_token(code, conn) do
+    body =
+      Jason.encode!(%{
+        client_id: google_client_id(),
+        client_secret: google_client_secret(),
+        redirect_uri: generate_redirect_uri(conn),
+        grant_type: "authorization_code",
+        code: code
+      })
+
     inject_poison().post(@google_token_url, body)
     |> parse_body_response()
-  end
-
-  def get_token(code, conn) do
-    conn
-    |> generate_redirect_uri()
-    |> get_token(code)
   end
 
   @doc """
@@ -111,7 +97,7 @@ defmodule ElixirAuthGoogle do
   **TODO**: we still need to handle the various failure conditions >> issues/16
   At this point the types of errors we expect are HTTP 40x/50x responses.
   """
-  @spec get_user_profile(String.t) :: {:ok, map} | {:error, any}
+  @spec get_user_profile(String.t()) :: {:ok, map} | {:error, any}
   def get_user_profile(token) do
     params = URI.encode_query(%{access_token: token}, :rfc3986)
 
@@ -124,18 +110,21 @@ defmodule ElixirAuthGoogle do
   `parse_body_response/1` parses the response returned by Google
   so your app can use the resulting JSON.
   """
-  @spec parse_body_response({atom, String.t} | {:error, any}) :: {:ok, map} | {:error, any}
+  @spec parse_body_response({atom, String.t()} | {:error, any}) :: {:ok, map} | {:error, any}
   def parse_body_response({:error, err}), do: {:error, err}
+
   def parse_body_response({:ok, response}) do
     body = Map.get(response, :body)
+    # make keys of map atoms for easier access in templates
     if body == nil do
       {:error, :no_body}
-    else # make keys of map atoms for easier access in templates
+    else
       {:ok, str_key_map} = Jason.decode(body)
-      atom_key_map = for {key, val} <- str_key_map, into: %{},
-        do: {String.to_atom(key), val}
+      atom_key_map = for {key, val} <- str_key_map, into: %{}, do: {String.to_atom(key), val}
       {:ok, atom_key_map}
-    end # https://stackoverflow.com/questions/31990134
+    end
+
+    # https://stackoverflow.com/questions/31990134
   end
 
   defp google_client_id do
@@ -143,14 +132,17 @@ defmodule ElixirAuthGoogle do
   end
 
   defp google_client_secret do
-    System.get_env("GOOGLE_CLIENT_SECRET") || Application.get_env(:elixir_auth_google, :client_secret)
-  end
-
-  defp google_redirect_uri do
-    System.get_env("GOOGLE_REDIRECT_URI") || Application.get_env(:elixir_auth_google, :redirect_uri) || raise "Redirect URI not set"
+    System.get_env("GOOGLE_CLIENT_SECRET") ||
+      Application.get_env(:elixir_auth_google, :client_secret)
   end
 
   defp google_scope do
-    System.get_env("GOOGLE_SCOPE") || Application.get_env(:elixir_auth_google, :google_scope) || @default_scope
+    System.get_env("GOOGLE_SCOPE") || Application.get_env(:elixir_auth_google, :google_scope) ||
+      @default_scope
+  end
+
+  defp get_app_callback_url do
+    System.get_env("GOOGLE_CALLBACK_PATH") ||
+      Application.get_env(:elixir_auth_google, :callback_path) || @default_callback_path
   end
 end

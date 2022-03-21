@@ -84,7 +84,7 @@ Add a line for **`:elixir_auth_google`** in the **`deps`** list:
 ```elixir
 def deps do
   [
-    {:elixir_auth_google, "~> 1.6.2"}
+    {:elixir_auth_google, "~> 1.6.3"}
   ]
 end
 ```
@@ -113,7 +113,7 @@ And if you get stuck, ask for
 [help!](https://github.com/dwyl/elixir-auth-google/issues)
 
 
-## 3. Setup CLIENT_ID and CLIENT_SECRET in your project 
+## 3. Setup CLIENT_ID and CLIENT_SECRET in your project
 
 You may either add those keys as environment variables or put them in the config:
 
@@ -175,7 +175,23 @@ get "/auth/google/callback", GoogleAuthController, :index
 
 Sample: [lib/app_web/router.ex#L20](https://github.com/dwyl/elixir-auth-google-demo/blob/4bb616dd134f498b84f079104c0f3345769517c4/lib/app_web/router.ex#L20)
 
+### Different callback url?
 
+You can specify the env var
+
+```
+export GOOGLE_CALLBACK_PATH=/myauth/google_callback
+```
+
+or add it in the configuration
+
+Or add the following in the config file:
+
+```elixir
+config :elixir_auth_google,
+  # ...
+  callback_path: "/myauth/google_callback"
+```
 
 ## 6. Add the "Login with Google" Button to your Template ✨
 
@@ -232,8 +248,8 @@ where you can display a "login success" message:
 
 ### _Optional_: Scopes
 
-Most of the time you will only want/need 
-the person's email address and profile data 
+Most of the time you will only want/need
+the person's email address and profile data
 when authenticating with your App.
 In the cases where you need more specific access
 to a Google service, you will need to specify the exact scopes.
@@ -255,7 +271,7 @@ config :elixir_auth_google,
 ```
 
 With that configured, your App will gain access to the requested services
-once the person authenticates/authorizes. 
+once the person authenticates/authorizes.
 
 <br /> <br />
 
@@ -304,7 +320,7 @@ and `CSS` for layout/style:
       Sign in with Google
     </div>
   </a>
-<div>
+</div>
 ```
 
 > We created this from scratch using the SVG of the Google logo

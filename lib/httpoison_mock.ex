@@ -12,21 +12,22 @@ defmodule ElixirAuthGoogle.HTTPoisonMock do
     {:error, :bad_request}
   end
 
-
   # get/1 using a dummy _url to test body decoding.
   def get(_url) do
-    {:ok, %{body: Jason.encode!(
+    {:ok,
      %{
-       email: "nelson@gmail.com",
-       email_verified: true,
-       family_name: "Correia",
-       given_name: "Nelson",
-       locale: "en",
-       name: "Nelson Correia",
-       picture: "https://lh3.googleusercontent.com/a-/AAuE7mApnYb260YC1JY7a",
-       sub: "940732358705212133793"
-     }
-    )}}
+       body:
+         Jason.encode!(%{
+           email: "nelson@gmail.com",
+           email_verified: true,
+           family_name: "Correia",
+           given_name: "Nelson",
+           locale: "en",
+           name: "Nelson Correia",
+           picture: "https://lh3.googleusercontent.com/a-/AAuE7mApnYb260YC1JY7a",
+           sub: "940732358705212133793"
+         })
+     }}
   end
 
   @doc """
