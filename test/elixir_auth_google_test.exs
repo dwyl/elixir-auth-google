@@ -113,17 +113,31 @@ defmodule ElixirAuthGoogleTest do
              "https://foobar.com/auth/google/callback"
   end
 
-  test "generate_redirect_uri(conn) generate correct callback url with custom url path" do
+  test "generate_redirect_uri(conn) generate correct callback url with custom url path from application environment variable" do
     conn = %{
       host: "foobar.com",
       port: 80
     }
 
-    mock_app = [get_env: fn :elixir_auth_google, :callback_path -> "/special/callback" end]
+    mock_get_env = fn :elixir_auth_google, :callback_path -> "/special/callback" end
 
-    with_mock Application, mock_app do
+    with_mock Application, [get_env: mock_get_env] do
       assert ElixirAuthGoogle.generate_redirect_uri(conn) ==
                "https://foobar.com/special/callback"
+    end
+  end
+
+  test "generate_redirect_uri(conn) generate correct callback url with custom url path from system environment variable" do
+    conn = %{
+      host: "foobar.com",
+      port: 80
+    }
+
+    mock_get_env = fn "GOOGLE_CALLBACK_PATH" -> "/very/special/callback" end
+
+    with_mock System, [get_env: mock_get_env] do
+      assert ElixirAuthGoogle.generate_redirect_uri(conn) ==
+               "https://foobar.com/very/special/callback"
     end
   end
 end
