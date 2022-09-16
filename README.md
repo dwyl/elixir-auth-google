@@ -150,6 +150,7 @@ defmodule AppWeb.GoogleAuthController do
     {:ok, token} = ElixirAuthGoogle.get_token(code, conn)
     {:ok, profile} = ElixirAuthGoogle.get_user_profile(token.access_token)
     conn
+    |> put_view(AppWeb.PageView)
     |> render(:welcome, profile: profile)
   end
 end
@@ -226,7 +227,7 @@ and type the following code:
 <section class="phx-hero">
   <h1>Welcome to Awesome App!</h1>
   <p>To get started, login to your Google Account: <p>
-  <a href="<%= @oauth_google_url %>">
+  <a href={@oauth_google_url}>
     <img src="https://i.imgur.com/Kagbzkq.png" alt="Sign in with Google" />
   </a>
 </section>
