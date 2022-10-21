@@ -33,10 +33,11 @@ defmodule ElixirAuthGoogle.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:httpoison, "~> 1.8.0"},
       {:jason, "~> 1.2"},
-
+      {:joken, "~> 2.5"},
+      {:jose, "~> 1.11"},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       # tracking test coverage
       {:excoveralls, "~> 0.14.1", only: [:test, :dev]},
       # mock stuffs in test

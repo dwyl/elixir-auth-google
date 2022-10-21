@@ -1,5 +1,7 @@
 # Creating a Google Application for OAuth2 Authentication
 
+TO BE REVIEWED-------------------------
+
 This is a step-by-step guide
 for creating a Google App from scratch
 so that you can obtain the API keys
@@ -28,7 +30,6 @@ so you can see your "API & Services Dashboard":
 If you don't already have a Google APIs project for your Elixir App,
 click the **CREATE** button on the dashboard.
 
-
 ## 2. Define the Details for your New Project (App)
 
 Enter the details for your App's **Project name**
@@ -37,7 +38,6 @@ and where appropriate input any additional/relevant info:
 <img width="972" alt="elixir-auth-google-app-details" src="https://user-images.githubusercontent.com/194400/69722801-ead17a80-110f-11ea-9bc9-d145b29baac6.png">
 
 Click the **CREATE** button to create your project.
-
 
 ## 3. OAuth Consent Screen
 
@@ -76,33 +76,32 @@ the details of your App for the credentials.
 
 <img width="971" alt="Screenshot 2019-11-27 at 02 13 55" src="https://user-images.githubusercontent.com/194400/69728313-296d3200-111c-11ea-8da0-85c1ade89d8a.png">
 
-+ Application Type: Web application
-+ Name: Elixir Auth Server
-+ Authorized JavaScript origins:
-http://localhost:4000
-(_the default for a Phoenix app on your local dev machine.
+- Application Type: Web application
+- Name: Elixir Auth Server
+- Authorized JavaScript origins:
+  http://localhost:4000
+  (_the default for a Phoenix app on your local dev machine.
   you can add your "production" URL later._)
-+ Authorized redirect URIs:  
-http://localhost:4000/auth/google/callback
-(_the endpoint to redirect to once authentication is successful.
+- Authorized redirect URIs:  
+  http://localhost:4000/auth/google/callback
+  (_the endpoint to redirect to once authentication is successful.
   again, add your production URL once you have auth working on `localhost`_)
 
 > Ensure you hit the enter key after pasting/typing
-the URIs to ensure they are saved.
-A common stumbling block is that URIs aren't saved. See:
-https://stackoverflow.com/questions/24363041/redirect-uri-in-google-cloud-console-doesnt-save
+> the URIs to ensure they are saved.
+> A common stumbling block is that URIs aren't saved. See:
+> https://stackoverflow.com/questions/24363041/redirect-uri-in-google-cloud-console-doesnt-save
 
 Once you have input the relevant data click the **Create** button.
 
 > This form/step can be confusing at first,
-but essentially you can have multiple credentials
-for the same project,
-e.g: if you had a Native Android App
-you would create a new set of credentials
-to ensure a separation of concerns between
-server and client implementations.
-For now just create the server (Elixir) credentials.
-
+> but essentially you can have multiple credentials
+> for the same project,
+> e.g: if you had a Native Android App
+> you would create a new set of credentials
+> to ensure a separation of concerns between
+> server and client implementations.
+> For now just create the server (Elixir) credentials.
 
 ## 5. Download the OAuth Client Credentials
 
@@ -114,22 +113,23 @@ you will be shown your OAuth client Credentials:
 
 Download the credentials, e.g:
 
-+ Client ID: 631770888008-6n0oruvsm16kbkqg6u76p5cv5kfkcekt.apps.googleusercontent.com
-+ Client Secret: MHxv6-RGF5nheXnxh1b0LNDq
+- Client ID: 631770888008-6n0oruvsm16kbkqg6u76p5cv5kfkcekt.apps.googleusercontent.com
+- Client Secret: MHxv6-RGF5nheXnxh1b0LNDq
 
 > ⚠️ Don't worry, these keys aren't valid.
-We deleted them immediately after capturing the screenshot
-to avoid any security issues.
-Obviously treat your credentials
-like you would the username+password for your bank account;
-never share a **real** Client ID or secret on GitHub
-or any other public/insecure forum!
+> We deleted them immediately after capturing the screenshot
+> to avoid any security issues.
+> Obviously treat your credentials
+> like you would the username+password for your bank account;
+> never share a **real** Client ID or secret on GitHub
+> or any other public/insecure forum!
 
 You can also download the OAuth credentials as a json file:
 
 <img width="821" alt="elixir-auth-google-json" src="https://user-images.githubusercontent.com/194400/69736916-57a63e00-112b-11ea-8b28-6f137f00106b.png">
 
 Example:
+
 ```json
 {
   "web": {
@@ -139,25 +139,19 @@ Example:
     "token_uri": "https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "client_secret": "MHxv6-RGF5nheXnxh1b0LNDq",
-    "redirect_uris": [
-      "http://localhost:4000/auth/google/callback"
-    ],
-    "javascript_origins": [
-      "http://localhost:4000"
-    ]
+    "redirect_uris": ["http://localhost:4000/auth/google/callback"],
+    "javascript_origins": ["http://localhost:4000"]
   }
 }
 ```
 
 > Again, for security reasons,
-these credentials were
-invalidated _immediately_ after downloading. <br />
-But this is what the file looks like.
-
+> these credentials were
+> invalidated _immediately_ after downloading. <br />
+> But this is what the file looks like.
 
 Return to step 3 of the
 [README.md](https://github.com/dwyl/elixir-auth-google/blob/master/README.md)
-
 
 <br />
 
