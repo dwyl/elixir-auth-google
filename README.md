@@ -66,7 +66,7 @@ and you'll be up-and running in 5 minutes.
 # _How_? ✅
 
 You can add Google Authentication to your Elixir App
-using **`elixir_auth_one_tap`** <br />
+using **`Elixir_auth_one_tap`** <br />
 in under **5 minutes**
 by following these **5 _easy_ steps**:
 
