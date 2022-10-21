@@ -165,7 +165,7 @@ end
 This code does 3 things:
 
 - receives a one-time auth `jwt` sent by Google after the person authenticates.
-- verifies the `jwt` against Google's public key and retrives the users credentials
+- verifies the `jwt` against Google's public key and retrieves the users credentials
 - renders a `:welcome` view displaying some profile data
   to confirm that login with Google was successful.
 
