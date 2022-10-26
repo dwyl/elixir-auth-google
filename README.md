@@ -144,19 +144,23 @@ defmodule AppWeb.GoogleAuthController do
   `index/2` handles the callback from Google Auth API redirect.
   """
   def index(conn, %{"code" => code}) do
-    {:ok, profile} = ElixirAuthGoogle.get_profile(code, conn)
-
-    render(conn, :welcome, profile: profile)
+   case ElixirAuthGoogle.get_profile(code, conn) do
+    {:ok, profile} ->
+      render(conn, :welcome, profile: profile)
+    {:error, message} ->
+      render(conn, :page, error_msg: message)
+    end
   end
 end
 ```
 
-This code does 2 things:
+This code does 3 things:
 
 - Request the person's profile data from Google based on the response `code` sent by Google
   after the person authenticates.
 - Render a `:welcome` view displaying some profile data
   to confirm that login with Google was successful.
+- falls back to the initial page whenever `get_profile/1` fails and send a message `{:error, :bad_request}`.
 
 ## 5. Create the `/auth/google/callback` Endpoint 📍
 
