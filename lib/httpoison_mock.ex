@@ -8,14 +8,16 @@ defmodule ElixirAuthGoogle.HTTPoisonMock do
   get/1 passing in the wrong_token is used to test failure in the auth process.
   Obviously, don't invoke it from your App unless you want people to see fails.
   """
-  def get("https://www.googleapis.com/oauth2/v3/userinfo?access_token=wrong_token") do
-    {:error, :bad_request}
+  @wrong_url "https://www.googleapis.com/oauth2/v3/userinfo?access_token=wrong_token"
+  def get(@wrong_url) do
+    {:ok, {:error, :bad_request}}
   end
 
   # get/1 using a dummy _url to test body decoding.
   def get(_url) do
     {:ok,
      %{
+       status_code: 200,
        body:
          Jason.encode!(%{
            email: "nelson@gmail.com",
@@ -33,7 +35,18 @@ defmodule ElixirAuthGoogle.HTTPoisonMock do
   @doc """
   post/2 passing in dummy _url & _body to test return of access_token.
   """
-  def post(_url, _body) do
-    {:ok, %{body: Jason.encode!(%{access_token: "token1"})}}
+
+  def post(_url, body) do
+    case Jason.decode!(body) do
+      %{"code" => "123"} ->
+        {:ok,
+         %{
+           status_code: 200,
+           body: Jason.encode!(%{access_token: "token1"})
+         }}
+
+      %{"code" => "wrong_token"} ->
+        {:ok, %{status_code: 400, body: nil}}
+    end
   end
 end

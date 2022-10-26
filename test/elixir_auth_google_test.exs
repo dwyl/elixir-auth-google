@@ -64,27 +64,32 @@ defmodule ElixirAuthGoogleTest do
     assert url == expected
   end
 
-  test "get Google token" do
+  # test "get Google token" do
+  #   conn = %{
+  #     host: "localhost",
+  #     port: 4000
+  #   }
+
+  #   {:ok, res} = ElixirAuthGoogle.get_token("ok_code", conn)
+  #   assert res == %{access_token: "token1"}
+  # end
+
+  # test "get Google token (config redirect uri)" do
+  #   conn = %{
+  #     host: "localhost",
+  #     port: 4000
+  #   }
+
+  #   {:ok, res} = ElixirAuthGoogle.get_token("ok_code", conn)
+  #   assert res == %{access_token: "token1"}
+  # end
+
+  test "get_profile/1" do
     conn = %{
       host: "localhost",
       port: 4000
     }
 
-    {:ok, res} = ElixirAuthGoogle.get_token("ok_code", conn)
-    assert res == %{access_token: "token1"}
-  end
-
-  test "get Google token (config redirect uri)" do
-    conn = %{
-      host: "localhost",
-      port: 4000
-    }
-
-    {:ok, res} = ElixirAuthGoogle.get_token("ok_code", conn)
-    assert res == %{access_token: "token1"}
-  end
-
-  test "get_user_profile/1" do
     res = %{
       email: "nelson@gmail.com",
       email_verified: true,
@@ -96,10 +101,33 @@ defmodule ElixirAuthGoogleTest do
       sub: "940732358705212133793"
     }
 
-    assert ElixirAuthGoogle.get_user_profile("123") == {:ok, res}
+    assert ElixirAuthGoogle.get_profile("123", conn) == {:ok, res}
+
+    # useless tests for the 100% coveralls
+    # assert ElixirAuthGoogle.get_user_profile("123") == {:ok, res}
+    # assert ElixirAuthGoogle.parse_response({:ok, %{access_token: "token1"}}) == {:ok, res}
+    # assert ElixirAuthGoogle.parse_status({:ok, nil}) == {:error, :bad_request}
+
+    # assert ElixirAuthGoogle.parse_status(
+    #          {:ok, %{body: "{\"access_token\":\"token1\"}", status_code: 200}}
+    #        ) == {:ok, %{access_token: "token1"}}
+  end
+
+  test "utilities" do
+    assert ElixirAuthGoogle.encode("123") == "access_token=123"
+    assert ElixirAuthGoogle.convert(%{"a" => 1}) == %{a: 1}
   end
 
   test "return error with incorrect token" do
+    conn = %{
+      host: "localhost",
+      port: 4000
+    }
+
+    assert ElixirAuthGoogle.get_profile("wrong_token", conn) == {:error, :bad_request}
+  end
+
+  test "get_user_profile return error with incorrect token for the Mock tests" do
     assert ElixirAuthGoogle.get_user_profile("wrong_token") == {:error, :bad_request}
   end
 
@@ -121,7 +149,7 @@ defmodule ElixirAuthGoogleTest do
 
     mock_get_env = fn :elixir_auth_google, :callback_path -> "/special/callback" end
 
-    with_mock Application, [get_env: mock_get_env] do
+    with_mock Application, get_env: mock_get_env do
       assert ElixirAuthGoogle.generate_redirect_uri(conn) ==
                "https://foobar.com/special/callback"
     end
@@ -135,7 +163,7 @@ defmodule ElixirAuthGoogleTest do
 
     mock_get_env = fn "GOOGLE_CALLBACK_PATH" -> "/very/special/callback" end
 
-    with_mock System, [get_env: mock_get_env] do
+    with_mock System, get_env: mock_get_env do
       assert ElixirAuthGoogle.generate_redirect_uri(conn) ==
                "https://foobar.com/very/special/callback"
     end

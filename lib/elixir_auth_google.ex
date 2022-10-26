@@ -2,6 +2,7 @@ defmodule ElixirAuthGoogle do
   @moduledoc """
   Minimalist Google OAuth Authentication for Elixir Apps.
   Extensively tested, documented, maintained and in active use in production.
+  It exposes two functions, `generate_oauth_url/2` and `get_profile/1`.
   """
   @google_auth_url "https://accounts.google.com/o/oauth2/v2/auth?response_type=code"
   @google_token_url "https://oauth2.googleapis.com/token"
@@ -42,12 +43,19 @@ defmodule ElixirAuthGoogle do
   end
 
   @doc """
+  Same as `generate_oauth_url/2` with `state` query parameter
+  """
+  def generate_oauth_url(conn, state) when is_binary(state) do
+    params = URI.encode_query(%{state: state}, :rfc3986)
+    generate_oauth_url(conn) <> "&#{params}"
+  end
+
+  @doc """
   `generate_oauth_url/1` creates the Google OAuth2 URL with client_id, scope and
   redirect_uri which is the URL Google will redirect to when auth is successful.
   This is the URL you need to use for your "Login with Google" button.
   See step 5 of the instructions.
   """
-  @spec generate_oauth_url(conn) :: String.t()
   def generate_oauth_url(conn) do
     query = %{
       client_id: google_client_id(),
@@ -61,33 +69,65 @@ defmodule ElixirAuthGoogle do
   end
 
   @doc """
-  Same as `generate_oauth_url/1` with `state` query parameter
-  """
-  def generate_oauth_url(conn, state) when is_binary(state) do
-    params = URI.encode_query(%{state: state}, :rfc3986)
-    generate_oauth_url(conn) <> "&#{params}"
-  end
-
-  @doc """
   `get_token/2` encodes the secret keys and authorization code returned by Google
   and issues an HTTP request to get a person's profile data.
 
   **TODO**: we still need to handle the various failure conditions >> issues/16
   """
-  @spec get_token(String.t(), conn) :: {:ok, map} | {:error, any}
-  def get_token(code, conn) do
-    body =
-      Jason.encode!(%{
-        client_id: google_client_id(),
-        client_secret: google_client_secret(),
-        redirect_uri: generate_redirect_uri(conn),
-        grant_type: "authorization_code",
-        code: code
-      })
 
-    inject_poison().post(@google_token_url, body)
-    |> parse_body_response()
+  # @spec get_token(String.t(), conn) :: {:ok, map} | {:error, any}
+  # def get_token(code, conn) do
+  #   body =
+  #     Jason.encode!(%{
+  #       client_id: google_client_id(),
+  #       client_secret: google_client_secret(),
+  #       redirect_uri: generate_redirect_uri(conn),
+  #       grant_type: "authorization_code",
+  #       code: code
+  #     })
+
+  #   inject_poison().post(@google_token_url, body)
+  #   |> parse_body_response()
+  # end
+
+  def get_profile(code, conn) do
+    Jason.encode!(%{
+      client_id: google_client_id(),
+      client_secret: google_client_secret(),
+      redirect_uri: generate_redirect_uri(conn),
+      grant_type: "authorization_code",
+      code: code
+    })
+    |> then(fn body ->
+      inject_poison().post(@google_token_url, body)
+      |> IO.inspect()
+      |> parse_status()
+      |> parse_response()
+    end)
   end
+
+  # Note: failure status are 400, 401, 404 depending on which input is corrupted.
+  # all tested: client_id, secret, redirect_uri, code, @google_token_url, @google-user_profile, params
+
+  def parse_status({:ok, %{status_code: 200}} = response), do: parse_body_response(response)
+  def parse_status({:ok, _}), do: {:error, :bad_request}
+
+  def parse_body_response({:error, err}), do: {:error, err}
+  def parse_body_response({:ok, %{body: nil}}), do: {:error, :no_body}
+
+  def parse_body_response({:ok, %{body: body}}) do
+    {:ok,
+     body
+     |> Jason.decode!()
+     |> convert()}
+  end
+
+  def convert(str_key_map) do
+    for {key, val} <- str_key_map, into: %{}, do: {String.to_atom(key), val}
+  end
+
+  def parse_response({:error, response}), do: {:error, response}
+  def parse_response({:ok, response}), do: get_user_profile(response.access_token)
 
   @doc """
   `get_user_profile/1` requests the Google User's userinfo profile data
@@ -97,51 +137,65 @@ defmodule ElixirAuthGoogle do
   **TODO**: we still need to handle the various failure conditions >> issues/16
   At this point the types of errors we expect are HTTP 40x/50x responses.
   """
-  @spec get_user_profile(String.t()) :: {:ok, map} | {:error, any}
-  def get_user_profile(token) do
-    params = URI.encode_query(%{access_token: token}, :rfc3986)
 
-    "#{@google_user_profile}?#{params}"
-    |> inject_poison().get()
-    |> parse_body_response()
+  # @spec get_user_profile(String.t()) :: {:ok, map} | {:error, any}
+  # def get_user_profile(token) do
+  #   params = URI.encode_query(%{access_token: token}, :rfc3986)
+
+  #   "#{@google_user_profile}?#{params}"
+  #   |> inject_poison().get()
+  #   |> parse_body_response()
+  # end
+
+  def get_user_profile(access_token) do
+    access_token
+    |> encode()
+    |> then(fn params ->
+      (@google_user_profile <> "?" <> params)
+      |> inject_poison().get()
+      |> parse_status()
+    end)
   end
+
+  def encode(token), do: URI.encode_query(%{access_token: token}, :rfc3986)
 
   @doc """
   `parse_body_response/1` parses the response returned by Google
   so your app can use the resulting JSON.
   """
-  @spec parse_body_response({atom, String.t()} | {:error, any}) :: {:ok, map} | {:error, any}
-  def parse_body_response({:error, err}), do: {:error, err}
 
-  def parse_body_response({:ok, response}) do
-    body = Map.get(response, :body)
-    # make keys of map atoms for easier access in templates
-    if body == nil do
-      {:error, :no_body}
-    else
-      {:ok, str_key_map} = Jason.decode(body)
-      atom_key_map = for {key, val} <- str_key_map, into: %{}, do: {String.to_atom(key), val}
-      {:ok, atom_key_map}
-    end
+  # @spec parse_body_response({atom, String.t()} | {:error, any}) :: {:ok, map} | {:error, any}
+  # def parse_body_response({:error, err}), do: {:error, err}
 
-    # https://stackoverflow.com/questions/31990134
-  end
+  # def parse_body_response({:ok, response}) do
+  #   body = Map.get(response, :body)
+  #   # make keys of map atoms for easier access in templates
+  #   if body == nil do
+  #     {:error, :no_body}
+  #   else
+  #     {:ok, str_key_map} = Jason.decode(body)
+  #     atom_key_map = for {key, val} <- str_key_map, into: %{}, do: {String.to_atom(key), val}
+  #     {:ok, atom_key_map}
+  #   end
 
-  defp google_client_id do
+  #   # https://stackoverflow.com/questions/31990134
+  # end
+
+  def google_client_id do
     System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id)
   end
 
-  defp google_client_secret do
+  def google_client_secret do
     System.get_env("GOOGLE_CLIENT_SECRET") ||
       Application.get_env(:elixir_auth_google, :client_secret)
   end
 
-  defp google_scope do
+  def google_scope do
     System.get_env("GOOGLE_SCOPE") || Application.get_env(:elixir_auth_google, :google_scope) ||
       @default_scope
   end
 
-  defp get_app_callback_url do
+  def get_app_callback_url do
     System.get_env("GOOGLE_CALLBACK_PATH") ||
       Application.get_env(:elixir_auth_google, :callback_path) || @default_callback_path
   end

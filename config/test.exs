@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :elixir_auth_google,
   client_id: "631770888008-6n0oruvsm16kbkqg6u76p5cv5kfkcekt.apps.googleusercontent.com",
