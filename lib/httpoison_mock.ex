@@ -10,7 +10,7 @@ defmodule ElixirAuthGoogle.HTTPoisonMock do
   """
   @wrong_url "https://www.googleapis.com/oauth2/v3/userinfo?access_token=wrong_token"
   def get(@wrong_url) do
-    {:ok, {:error, :bad_request}}
+    {:ok, %{status_code: 400}}
   end
 
   # get/1 using a dummy _url to test body decoding.

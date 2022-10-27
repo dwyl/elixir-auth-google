@@ -79,18 +79,19 @@ Open your project's **`mix.exs`** file
 and locate the **`deps`** (dependencies) section. <br />
 Add a line for **`:elixir_auth_google`** in the **`deps`** list:
 
+:exclamation: the Github action should update the OTP -> 25 and Elixir versions -> 1.14 ?
+
+:exclamation: this version is disruptive as it exposes only one function in the controller
+
 ```elixir
 def deps do
   [
-    {:elixir_auth_google, "~> 1.6.3"}
+    {:elixir_auth_google, "~> 2.0"}
   ]
 end
 ```
 
-Once you have added the line to your **`mix.exs`**,
-remember to run the **`mix deps.get`** command
-in your terminal
-to _download_ the dependencies.
+Once you have added the line to your **`mix.exs`** remember to run the **`mix deps.get`** command in your terminal to _download_ the dependencies.
 
 ## 2. Create Google APIs Application OAuth2 Credentials 🆕
 
@@ -137,18 +138,20 @@ Create a new file called
 and add the following code:
 
 ```elixir
+# lib/app_web/controllers/google_auth_controller.ex
+
 defmodule AppWeb.GoogleAuthController do
   use AppWeb, :controller
+  action_fallback LoginErrorController
 
   @doc """
   `index/2` handles the callback from Google Auth API redirect.
   """
   def index(conn, %{"code" => code}) do
-   case ElixirAuthGoogle.get_profile(code, conn) do
-    {:ok, profile} ->
-      render(conn, :welcome, profile: profile)
-    {:error, message} ->
-      render(conn, :page, error_msg: message)
+    with {:ok, profile} <- ElixirAuthGoogle.get_profile(code, conn) do
+      conn
+      |> put_view(AppWeb.PageView)
+      |> render(:welcome, profile: profile)
     end
   end
 end
@@ -156,11 +159,37 @@ end
 
 This code does 3 things:
 
-- Request the person's profile data from Google based on the response `code` sent by Google
-  after the person authenticates.
-- Render a `:welcome` view displaying some profile data
+- Requests the person's profile data from Google based on the response `code` sent by Google after the person authenticates.
+- Renders a `:welcome` view displaying some profile data
   to confirm that login with Google was successful.
-- falls back to the initial page whenever `get_profile/1` fails and send a message `{:error, :bad_request}`.
+- [Falls back](https://hexdocs.pm/phoenix/Phoenix.Controller.html#action_fallback/1) to the initial page whenever `get_profile/1` fails and sends a message `{:error, :bad_request}`.
+
+## 4.bis Optional: create an fallback controller
+
+In case the login process returns an error (because of wrong credentials, call didn't succeed), you may want ot capture and handle it nicely. This is what the `action_fallback` does: pass the flow to this controller.
+
+```elixir
+# lib/app_web/login_error_controller.ex
+
+defmodule AppWeb.LoginErrorController do
+  use AppWeb, :controller
+  require Logger
+
+  @moduledoc """
+  An example of a fallback. Returns to "/" and displays flash error
+  """
+  def call(conn, {:error, message}) do
+    oauth_google_url = App.AuthGoogle.generate_oauth_url(conn)
+
+    conn
+    |> fetch_session()
+    |> fetch_flash()
+    |> put_flash(:error, message)
+    |> put_view(AppWeb.PageView)
+    |> render("index.html", oauth_google_url: oauth_google_url)
+  end
+end
+```
 
 ## 5. Create the `/auth/google/callback` Endpoint 📍
 
@@ -170,10 +199,28 @@ and locate the section that looks like `scope "/", AppWeb do`
 Add the following line:
 
 ```elixir
-get "/auth/google/callback", GoogleAuthController, :index
+# router.ex
+
+scope "/", AppWeb do
+  pipe_through :browser
+    [...]
+    get "/auth/google/callback", GoogleAuthController, :index
+end
 ```
 
 Sample: [lib/app_web/router.ex#L20](https://github.com/dwyl/elixir-auth-google-demo/blob/4bb616dd134f498b84f079104c0f3345769517c4/lib/app_web/router.ex#L20)
+
+> **Note**: Google recommends to set a [Content Security Policy](https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid#content_security_policy) to prevent XSS attacks.
+> This can be this way by adding the CSP in the router as a plug in the `:borwser` pipeline:
+
+```elixir
+# router
+@csp "script-src https://accounts.google.com/gsi/client; frame-src https://accounts.google.com/gsi/; connect-src https://accounts.google.com/gsi/;"
+
+pipeline :browser
+  [...]
+  plug(:put_secure_browser_headers, %{"content-security-policy-report-only" => @csp})
+```
 
 ### Different callback url?
 
@@ -213,6 +260,8 @@ end
 To:
 
 ```elixir
+# lib/app_web/controllers/page_controller.ex
+
 def index(conn, _params) do
   oauth_google_url = ElixirAuthGoogle.generate_oauth_url(conn)
   render(conn, "index.html",[oauth_google_url: oauth_google_url])
@@ -225,6 +274,8 @@ Open the `/lib/app_web/templates/page/index.html.eex` file
 and type the following code:
 
 ```html
+# lib/app_web/templates/page/index.html.heex
+
 <section class="phx-hero">
   <h1>Welcome to Awesome App!</h1>
   <p>To get started, login to your Google Account:</p>
