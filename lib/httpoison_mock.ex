@@ -13,6 +13,12 @@ defmodule ElixirAuthGoogle.HTTPoisonMock do
     {:ok, %{status_code: 400}}
   end
 
+  @bad_profile "https://www.googleapis.com/oauth2/v3/userinfo?access_token=bad_profile"
+  def get(@bad_profile) do
+    IO.puts("ici")
+    {:ok, {:error, :bad_request}}
+  end
+
   # get/1 using a dummy _url to test body decoding.
   def get(_url) do
     {:ok,
@@ -38,6 +44,12 @@ defmodule ElixirAuthGoogle.HTTPoisonMock do
 
   def post(_url, body) do
     case Jason.decode!(body) do
+      %{"code" => "body_nil"} ->
+        {:ok, %{status_code: 200, body: nil}}
+
+      %{"code" => "bad_profile"} ->
+        {:ok, %{status_code: 200, body: Jason.encode!(%{access_token: "bad_profile"})}}
+
       %{"code" => "123"} ->
         {:ok,
          %{
@@ -46,7 +58,7 @@ defmodule ElixirAuthGoogle.HTTPoisonMock do
          }}
 
       %{"code" => "wrong_token"} ->
-        {:ok, %{status_code: 400, body: nil}}
+        {:ok, %{status_code: 400}}
     end
   end
 end

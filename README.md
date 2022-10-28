@@ -179,7 +179,7 @@ defmodule AppWeb.LoginErrorController do
   An example of a fallback. Returns to "/" and displays flash error
   """
   def call(conn, {:error, message}) do
-    oauth_google_url = App.AuthGoogle.generate_oauth_url(conn)
+    oauth_google_url = ElixirAuthGoogle.generate_oauth_url(conn)
 
     conn
     |> fetch_session()

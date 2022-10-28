@@ -107,19 +107,23 @@ defmodule ElixirAuthGoogle do
 
   # Note: failure status are 400, 401, 404 depending on which input is corrupted.
   # all tested: client_id, secret, redirect_uri, code, @google_token_url, @google-user_profile, params
-  def parse_status({:ok, %{status_code: 200}} = response), do: parse_body_response(response)
-  # def parse_status({:ok, _}), do: {:error, :bad_request}
-  # or more verbose with error status
-  def parse_status({:ok, status}) do
-    case status do
-      %{status_code: 404} -> {:error, :wrong_url}
-      %{status_code: 401} -> {:error, :unauthorized}
-      %{status_code: 400} -> {:error, :wrong_code}
-      _ -> {:error, :unknown_error}
-    end
+  def parse_status({:ok, %{status_code: 200}} = response) do
+    parse_body_response(response)
   end
 
-  def parse_body_response({:error, err}), do: {:error, err}
+  def parse_status({:ok, _}), do: {:error, :bad_request}
+  # or more verbose with error status
+  # def parse_status({:ok, status}) do
+  #   case status do
+  #     %{status_code: 404} -> {:error, :wrong_url}
+  #     %{status_code: 401} -> {:error, :unauthorized}
+  #     %{status_code: 400} -> {:error, :wrong_code}
+  #     _ -> {:error, :unknown_error}
+  #   end
+  # end
+
+  # def parse_body_response({:error, err}), do: {:error, err}
+
   def parse_body_response({:ok, %{body: nil}}), do: {:error, :no_body}
 
   def parse_body_response({:ok, %{body: body}}) do
@@ -157,6 +161,7 @@ defmodule ElixirAuthGoogle do
   #  <---- CHANGED
   def get_user_profile(access_token) do
     access_token
+    |> IO.inspect()
     |> encode()
     |> then(fn params ->
       (@google_user_profile <> "?" <> params)

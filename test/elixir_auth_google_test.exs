@@ -109,7 +109,7 @@ defmodule ElixirAuthGoogleTest do
     # assert ElixirAuthGoogle.parse_status({:ok, nil}) == {:error, :bad_request}
 
     # assert ElixirAuthGoogle.parse_status(
-    #          {:ok, %{body: "{\"access_token\":\"token1\"}", status_code: 200}}
+    #          {:ok, %{body: Jason.encode!(%{"access_token" => "token1"}), status_code: 200}}
     #        ) == {:ok, %{access_token: "token1"}}
   end
 
@@ -119,17 +119,37 @@ defmodule ElixirAuthGoogleTest do
   #   assert ElixirAuthGoogle.convert(%{"a" => 1}) == %{a: 1}
   # end
 
+  test "no_body" do
+    conn = %{
+      host: "localhost",
+      port: 4000
+    }
+
+    assert ElixirAuthGoogle.get_profile("body_nil", conn) == {:error, :no_body}
+  end
+
   test "return error with incorrect token" do
     conn = %{
       host: "localhost",
       port: 4000
     }
 
-    assert ElixirAuthGoogle.get_profile("wrong_token", conn) == {:error, :wrong_code}
+    # fails at HTTP.GET for get_user_profile
+    assert ElixirAuthGoogle.get_profile("bad_profile", conn) ==
+             {:error, :bad_request}
+
+    # fails at HTTP.POST
+    assert ElixirAuthGoogle.get_profile("wrong_token", conn) ==
+             {:error, :bad_request}
+
+    # {:error, :wrong_code}
   end
 
   test "get_user_profile return error with incorrect token for the Mock tests" do
-    assert ElixirAuthGoogle.get_user_profile("wrong_token") == {:error, :wrong_code}
+    assert ElixirAuthGoogle.get_user_profile("wrong_token") ==
+             {:error, :bad_request}
+
+    # {:error, :wrong_code}
   end
 
   test "generate_redirect_uri(conn) generate correct callback url" do
