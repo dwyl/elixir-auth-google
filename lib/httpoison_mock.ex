@@ -15,7 +15,6 @@ defmodule ElixirAuthGoogle.HTTPoisonMock do
 
   @bad_profile "https://www.googleapis.com/oauth2/v3/userinfo?access_token=bad_profile"
   def get(@bad_profile) do
-    IO.puts("ici")
     {:ok, {:error, :bad_request}}
   end
 

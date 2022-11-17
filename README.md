@@ -211,11 +211,13 @@ end
 Sample: [lib/app_web/router.ex#L20](https://github.com/dwyl/elixir-auth-google-demo/blob/4bb616dd134f498b84f079104c0f3345769517c4/lib/app_web/router.ex#L20)
 
 > **Note**: Google recommends to set a [Content Security Policy](https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid#content_security_policy) to prevent XSS attacks.
-> This can be this way by adding the CSP in the router as a plug in the `:borwser` pipeline:
+> This can be this way by adding the CSP in the router as a plug in the `:borwser` pipeline. We set is as "report-only" below.
 
 ```elixir
 # router
-@csp "script-src https://accounts.google.com/gsi/client; frame-src https://accounts.google.com/gsi/; connect-src https://accounts.google.com/gsi/;"
+@csp "script-src https://accounts.google.com/gsi/client;" <>
+      "frame-src https://accounts.google.com/gsi/;" <>
+      "connect-src https://accounts.google.com/gsi/;"
 
 pipeline :browser
   [...]
@@ -226,7 +228,7 @@ pipeline :browser
 
 You can specify the env var
 
-```
+```bash
 export GOOGLE_CALLBACK_PATH=/myauth/google_callback
 ```
 

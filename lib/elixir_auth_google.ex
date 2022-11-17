@@ -161,7 +161,6 @@ defmodule ElixirAuthGoogle do
   #  <---- CHANGED
   def get_user_profile(access_token) do
     access_token
-    |> IO.inspect()
     |> encode()
     |> then(fn params ->
       (@google_user_profile <> "?" <> params)
