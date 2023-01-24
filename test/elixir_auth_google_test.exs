@@ -141,7 +141,7 @@ defmodule ElixirAuthGoogleTest do
 
     mock_get_env = fn :elixir_auth_google, :callback_path -> "/special/callback" end
 
-    with_mock Application, [get_env: mock_get_env] do
+    with_mock Application, get_env: mock_get_env do
       assert ElixirAuthGoogle.generate_redirect_uri(conn) ==
                "https://foobar.com/special/callback"
     end
@@ -155,7 +155,7 @@ defmodule ElixirAuthGoogleTest do
 
     mock_get_env = fn "GOOGLE_CALLBACK_PATH" -> "/very/special/callback" end
 
-    with_mock System, [get_env: mock_get_env] do
+    with_mock System, get_env: mock_get_env do
       assert ElixirAuthGoogle.generate_redirect_uri(conn) ==
                "https://foobar.com/very/special/callback"
     end

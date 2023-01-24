@@ -13,12 +13,15 @@ defmodule ElixirAuthGoogle.MixProject do
       deps: deps(),
       description: @description,
       package: package(),
+      aliases: aliases(),
       # coverage
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
+        c: :test,
         coveralls: :test,
         "coveralls.json": :test,
-        "coveralls.html": :test
+        "coveralls.html": :test,
+        t: :test
       ]
     ]
   end
@@ -34,16 +37,16 @@ defmodule ElixirAuthGoogle.MixProject do
   defp deps do
     [
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:httpoison, "~> 1.8.0"},
+      {:httpoison, "~> 2.0.0"},
       {:jason, "~> 1.2"},
 
       # tracking test coverage
-      {:excoveralls, "~> 0.14.1", only: [:test, :dev]},
+      {:excoveralls, "~> 0.15.2", only: [:test, :dev]},
       # mock stuffs in test
       {:mock, "~> 0.3.0", only: :test},
 
       # documentation
-      {:ex_doc, "~> 0.25.3", only: :dev}
+      {:ex_doc, "~> 0.29.1", only: :dev}
     ]
   end
 
@@ -55,4 +58,12 @@ defmodule ElixirAuthGoogle.MixProject do
       files: ~w(lib LICENSE mix.exs README.md .formatter.exs)
     ]
   end
+
+  defp aliases do
+    [
+      t: ["test"],
+      c: ["coveralls.html"]
+    ]
+  end
+
 end
