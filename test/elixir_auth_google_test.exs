@@ -5,22 +5,54 @@ defmodule ElixirAuthGoogleTest do
 
   import Mock
 
-  test "get_baseurl_from_conn(conn) detects the URL based on conn.host" do
+  test "get_baseurl_from_conn(conn) detects the URL based on conn.host HTTP" do
     conn = %{
       host: "localhost",
-      port: 4000
+      port: 4000,
+      scheme: :http
     }
 
     assert ElixirAuthGoogle.get_baseurl_from_conn(conn) == "http://localhost:4000"
   end
 
-  test "get_baseurl_from_conn(conn) detects the URL for production" do
+  test "get_baseurl_from_conn(conn) detects the URL based on conn.host HTTPS" do
+    conn = %{
+      host: "localhost",
+      port: 4000,
+      scheme: :https
+    }
+
+    assert ElixirAuthGoogle.get_baseurl_from_conn(conn) == "https://localhost:4000"
+  end
+
+  test "get_baseurl_from_conn(conn) detects the URL for production HTTPS" do
     conn = %{
       host: "dwyl.com",
-      port: 80
+      port: 80,
+      scheme: :https
     }
 
     assert ElixirAuthGoogle.get_baseurl_from_conn(conn) == "https://dwyl.com"
+  end
+
+  test "get_baseurl_from_conn(conn) detects the URL for production HTTP" do
+    conn = %{
+      host: "dwyl.com",
+      port: 80,
+      scheme: :http
+    }
+
+    assert ElixirAuthGoogle.get_baseurl_from_conn(conn) == "http://dwyl.com"
+  end
+
+  test "get_baseurl_from_conn(conn) detects the URL for production HTTPS, non-standard port" do
+    conn = %{
+      host: "dwyl.com",
+      port: 8080,
+      scheme: :https
+    }
+
+    assert ElixirAuthGoogle.get_baseurl_from_conn(conn) == "https://dwyl.com:8080"
   end
 
   test "get Google login url" do
