@@ -96,6 +96,26 @@ defmodule ElixirAuthGoogleTest do
     assert url == expected
   end
 
+  test "get Google login with language parameters" do
+    conn = %{
+      host: "localhost",
+      port: 4000
+    }
+
+    url = ElixirAuthGoogle.generate_oauth_url(conn, %{hl: "es-MX"})
+    id = System.get_env("GOOGLE_CLIENT_ID")
+    id_from_config = Application.get_env(:elixir_auth_google, :client_id)
+
+    assert id == id_from_config
+
+    expected =
+      "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=" <>
+        id <>
+        "&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fauth%2Fgoogle%2Fcallback&scope=profile%20email&hl=es-MX"
+
+    assert url == expected
+  end
+
   test "get Google token" do
     conn = %{
       host: "localhost",

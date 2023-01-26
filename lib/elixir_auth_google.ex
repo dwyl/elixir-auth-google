@@ -78,6 +78,12 @@ defmodule ElixirAuthGoogle do
     generate_oauth_url(conn) <> "&#{params}"
   end
 
+  def generate_oauth_url(conn, query) when is_map(query) do
+    query = URI.encode_query(query, :rfc3986)
+    generate_oauth_url(conn) <> "&#{query}"
+  end
+
+
   @doc """
   `get_token/2` encodes the secret keys and authorization code returned by Google
   and issues an HTTP request to get a person's profile data.
