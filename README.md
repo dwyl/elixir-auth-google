@@ -218,6 +218,22 @@ def index(conn, _params) do
 end
 ```
 
+You can add extra features the the generated url by passing the state as a string,
+or any other query as a map of key/value pairs.
+
+```elixir
+oauth_google_url = ElixirAuthGoogle.generate_oauth_url(conn, state)
+```
+
+Will result in Google Sign In link with `&state=state` added.
+And something like:
+
+```elixir
+oauth_google_url = ElixirAuthGoogle.generate_oauth_url(conn, %{lang: 'pt-BR'})
+```
+
+Will return a url with `lang=pt-BR` included in the sign in request.
+
 ### 6.1 Update the `page/index.html.eex` Template
 
 Open the `/lib/app_web/templates/page/index.html.eex` file
