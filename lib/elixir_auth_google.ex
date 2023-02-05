@@ -71,8 +71,10 @@ defmodule ElixirAuthGoogle do
   end
 
   @doc """
-  Same as `generate_oauth_url/1` with `state` query parameter
+  Same as `generate_oauth_url/1` with `state` query parameter,
+  or a `map` of key/pair values to be included in the urls query string.
   """
+  @spec generate_oauth_url(conn, String.t | map) :: String.t()
   def generate_oauth_url(conn, state) when is_binary(state) do
     params = URI.encode_query(%{state: state}, :rfc3986)
     generate_oauth_url(conn) <> "&#{params}"
