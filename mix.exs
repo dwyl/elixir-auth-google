@@ -41,7 +41,7 @@ defmodule ElixirAuthGoogle.MixProject do
       {:jason, "~> 1.2"},
 
       # tracking test coverage
-      {:excoveralls, "~> 0.15.2", only: [:test, :dev]},
+      {:excoveralls, "~> 0.16.0", only: [:test, :dev]},
       # mock stuffs in test
       {:mock, "~> 0.3.0", only: :test},
 
