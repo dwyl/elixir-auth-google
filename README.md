@@ -277,9 +277,11 @@ Once you know the scope(s) your App needs access to,
 simply define them using an environment variable, e.g:
 
 ```
-GOOGLE_SCOPE=email contacts photoslibrary
+GOOGLE_SCOPE="email contacts photoslibrary"
 ```
-
+Those double-quotes (`"`) encapsulating the environment variable `String` are important. 
+Without them your system will only assign the first word to the `GOOGLE_SCOPE`.
+e.g: `email` and ignore the remaining scopes you need.
 ***or*** you can set them as a config variable if you prefer:
 
 ```
