@@ -5,6 +5,19 @@ defmodule ElixirAuthGoogleTest do
 
   import Mock
 
+  test "get_baseurl_from_conn(conn) x-forwarded-proto header for https #94" do
+    conn = %{
+      host: "gcal.fly.dev",
+      port: 80,
+      scheme: :http,
+      req_headers: %{
+        "x-forwarded-proto" => "https"
+      }
+    }
+
+    assert ElixirAuthGoogle.get_baseurl_from_conn(conn) == "https://gcal.fly.dev"
+  end
+
   test "get_baseurl_from_conn(conn) detects the URL based on conn.host HTTP" do
     conn = %{
       host: "localhost",

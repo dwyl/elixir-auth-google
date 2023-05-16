@@ -29,6 +29,10 @@ defmodule ElixirAuthGoogle do
     "#{Atom.to_string(s)}://#{h}:#{p}"
   end
 
+  def get_baseurl_from_conn(%{req_headers: r, host: h}) do
+    "#{Map.get(r, "x-forwarded-proto")}://#{h}"
+  end
+
   def get_baseurl_from_conn(%{host: h, scheme: s}) do
     "#{Atom.to_string(s)}://#{h}"
   end
