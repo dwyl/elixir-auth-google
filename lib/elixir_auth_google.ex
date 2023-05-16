@@ -17,7 +17,7 @@ defmodule ElixirAuthGoogle do
   @doc """
   `inject_poison/0` injects a TestDouble of HTTPoison in Test
   so that we don't have duplicate mock in consuming apps.
-  see: https://github.com/dwyl/elixir-auth-google/issues/35
+  see: github.com/dwyl/elixir-auth-google/issues/35
   """
   def inject_poison, do: @httpoison
 
@@ -29,12 +29,19 @@ defmodule ElixirAuthGoogle do
     "#{Atom.to_string(s)}://#{h}:#{p}"
   end
 
-  def get_baseurl_from_conn(%{req_headers: r, host: h}) do
+  # When deployed to Fly.io the scheme is "http" and port is "80" ...
+  # This results in an incorrect url see:
+  # github.com/dwyl/elixir-auth-google/issues/94
+  def get_baseurl_from_conn(%{host: h, req_headers: r}) do
     "#{Map.get(r, "x-forwarded-proto")}://#{h}"
   end
 
   def get_baseurl_from_conn(%{host: h, scheme: s}) do
     "#{Atom.to_string(s)}://#{h}"
+  end
+
+  def get_baseurl_from_conn(url) when is_binary(url) do
+    "https://#{url}"
   end
 
   def get_baseurl_from_conn(%{host: h} = conn) do
@@ -48,9 +55,15 @@ defmodule ElixirAuthGoogle do
   end
 
   @doc """
-  `generate_redirect_uri/1` generates the Google redirect uri based on conn
+  `generate_redirect_uri/1` generates the Google redirect uri based on `conn`
+  or the `url`. If the `App.Endpoint.url()` is passed into `generate_redirect_uri/1`,
+  simply return that `url` with the callback appended to it. #94
   """
   @spec generate_redirect_uri(conn) :: String.t()
+  def generate_redirect_uri(url) when is_binary(url) do
+    url <> get_app_callback_url()
+  end
+
   def generate_redirect_uri(conn) do
     get_baseurl_from_conn(conn) <> get_app_callback_url()
   end
@@ -61,8 +74,20 @@ defmodule ElixirAuthGoogle do
   This is the URL you need to use for your "Login with Google" button.
   See step 5 of the instructions.
   """
+  def generate_oauth_url(url) when is_binary(url) do
+    query = %{
+      client_id: google_client_id(),
+      scope: google_scope(),
+      redirect_uri: generate_redirect_uri(url)
+    }
+
+    params = URI.encode_query(query, :rfc3986)
+
+    "#{@google_auth_url}&#{params}"
+  end
+
   @spec generate_oauth_url(conn) :: String.t()
-  def generate_oauth_url(conn) do
+  def generate_oauth_url(conn) when is_map(conn) do
     query = %{
       client_id: google_client_id(),
       scope: google_scope(),
@@ -73,6 +98,7 @@ defmodule ElixirAuthGoogle do
 
     "#{@google_auth_url}&#{params}"
   end
+
 
   @doc """
   Same as `generate_oauth_url/1` with `state` query parameter,

@@ -178,6 +178,11 @@ defmodule ElixirAuthGoogleTest do
              "https://foobar.com/auth/google/callback"
   end
 
+  test "generate_oauth_url(url) passing in App.Endpoint.url() #94" do
+    url = "gcal.fly.dev"
+    assert ElixirAuthGoogle.get_baseurl_from_conn(url) == "https://gcal.fly.dev"
+  end
+
   test "generate_redirect_uri(conn) generate correct callback url with custom url path from application environment variable" do
     conn = %{
       host: "foobar.com",
