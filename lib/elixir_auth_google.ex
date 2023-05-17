@@ -13,6 +13,7 @@ defmodule ElixirAuthGoogle do
                 ElixirAuthGoogle.HTTPoisonMock) || HTTPoison
 
   @type conn :: map
+  @type url :: String.t()
 
   @doc """
   `inject_poison/0` injects a TestDouble of HTTPoison in Test
@@ -56,7 +57,7 @@ defmodule ElixirAuthGoogle do
   is passed into `generate_redirect_uri/1`,
   return that `url` with the callback appended to it. #94
   """
-  @spec generate_redirect_uri(conn) :: String.t()
+  @spec generate_redirect_uri(url) :: String.t()
   def generate_redirect_uri(url) when is_binary(url) do
     scheme =
       cond do
@@ -71,6 +72,7 @@ defmodule ElixirAuthGoogle do
     "#{scheme}#{url}" <> get_app_callback_url()
   end
 
+  @spec generate_redirect_uri(conn) :: String.t()
   def generate_redirect_uri(conn) do
     get_baseurl_from_conn(conn) <> get_app_callback_url()
   end
