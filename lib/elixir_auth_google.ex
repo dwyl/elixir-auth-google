@@ -40,10 +40,6 @@ defmodule ElixirAuthGoogle do
     "#{Atom.to_string(s)}://#{h}"
   end
 
-  def get_baseurl_from_conn(url) when is_binary(url) do
-    "https://#{url}"
-  end
-
   def get_baseurl_from_conn(%{host: h} = conn) do
     scheme =
       case h do
@@ -61,7 +57,7 @@ defmodule ElixirAuthGoogle do
   """
   @spec generate_redirect_uri(conn) :: String.t()
   def generate_redirect_uri(url) when is_binary(url) do
-    url <> get_app_callback_url()
+    "https://#{url}" <> get_app_callback_url()
   end
 
   def generate_redirect_uri(conn) do
@@ -175,7 +171,7 @@ defmodule ElixirAuthGoogle do
     # https://stackoverflow.com/questions/31990134
   end
 
-  defp google_client_id do
+  def google_client_id do
     System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id)
   end
 

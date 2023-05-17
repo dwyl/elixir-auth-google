@@ -180,7 +180,10 @@ defmodule ElixirAuthGoogleTest do
 
   test "generate_oauth_url(url) passing in App.Endpoint.url() #94" do
     url = "gcal.fly.dev"
-    assert ElixirAuthGoogle.get_baseurl_from_conn(url) == "https://gcal.fly.dev"
+    client_id = ElixirAuthGoogle.google_client_id
+    https = "https%3A%2F%2F#{url}"
+    auth_url = "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=#{client_id}&redirect_uri=#{https}%2Fauth%2Fgoogle%2Fcallback&scope=profile%20email"
+    assert ElixirAuthGoogle.generate_oauth_url(url) =~ auth_url
   end
 
   test "generate_redirect_uri(conn) generate correct callback url with custom url path from application environment variable" do
