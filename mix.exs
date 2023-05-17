@@ -65,5 +65,4 @@ defmodule ElixirAuthGoogle.MixProject do
       c: ["coveralls.html"]
     ]
   end
-
 end

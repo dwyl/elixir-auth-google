@@ -58,14 +58,15 @@ defmodule ElixirAuthGoogle do
   """
   @spec generate_redirect_uri(conn) :: String.t()
   def generate_redirect_uri(url) when is_binary(url) do
-    scheme = cond do
-      # url already contains scheme return empty
-      String.contains?(url, "https") -> ""
-      # url contains ":" is localhost:4000 no need for scheme
-      String.contains?(url, ":") -> ""
-      # Default to https if scheme not set e.g: app.fly.dev -> https://app.fly.fev
-      true -> "https://"
-    end
+    scheme =
+      cond do
+        # url already contains scheme return empty
+        String.contains?(url, "https") -> ""
+        # url contains ":" is localhost:4000 no need for scheme
+        String.contains?(url, ":") -> ""
+        # Default to https if scheme not set e.g: app.fly.dev -> https://app.fly.fev
+        true -> "https://"
+      end
 
     "#{scheme}#{url}" <> get_app_callback_url()
   end
@@ -105,12 +106,11 @@ defmodule ElixirAuthGoogle do
     "#{@google_auth_url}&#{params}"
   end
 
-
   @doc """
   Same as `generate_oauth_url/1` with `state` query parameter,
   or a `map` of key/pair values to be included in the urls query string.
   """
-  @spec generate_oauth_url(conn, String.t | map) :: String.t()
+  @spec generate_oauth_url(conn, String.t() | map) :: String.t()
   def generate_oauth_url(conn, state) when is_binary(state) do
     params = URI.encode_query(%{state: state}, :rfc3986)
     generate_oauth_url(conn) <> "&#{params}"
@@ -120,7 +120,6 @@ defmodule ElixirAuthGoogle do
     query = URI.encode_query(query, :rfc3986)
     generate_oauth_url(conn) <> "&#{query}"
   end
-
 
   @doc """
   `get_token/2` encodes the secret keys and authorization code returned by Google
