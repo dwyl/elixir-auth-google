@@ -58,14 +58,16 @@ defmodule ElixirAuthGoogle do
   """
   @spec generate_redirect_uri(conn) :: String.t()
   def generate_redirect_uri(url) when is_binary(url) do
-    # e.g: localhost:4000
-    scheme = if String.contains?(url, ":") do
-      "http"
-    else
-      "https"
+    scheme = cond do
+      # url already contains scheme return empty
+      String.contains?(url, "https") -> ""
+      # url contains ":" is localhost:4000 no need for scheme
+      String.contains?(url, ":") -> ""
+      # Default to https if scheme not set e.g: app.fly.dev -> https://app.fly.fev
+      true -> "https://"
     end
 
-    "#{scheme}://#{url}" <> get_app_callback_url()
+    "#{scheme}#{url}" <> get_app_callback_url()
   end
 
   def generate_redirect_uri(conn) do
