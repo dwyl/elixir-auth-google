@@ -59,7 +59,7 @@ defmodule ElixirAuthGoogle do
   @spec generate_redirect_uri(conn) :: String.t()
   def generate_redirect_uri(url) when is_binary(url) do
     # e.g: localhost:4000
-    scheme = if(String.contains?(url, ":")) do
+    scheme = if String.contains?(url, ":") do
       "http"
     else
       "https"
