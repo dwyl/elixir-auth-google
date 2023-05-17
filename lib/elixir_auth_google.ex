@@ -52,12 +52,20 @@ defmodule ElixirAuthGoogle do
 
   @doc """
   `generate_redirect_uri/1` generates the Google redirect uri based on `conn`
-  or the `url`. If the `App.Endpoint.url()` is passed into `generate_redirect_uri/1`,
-  simply return that `url` with the callback appended to it. #94
+  or the `url`. If the `App.Endpoint.url()` e.g: auth.dwyl.com or gcal.fly.dev
+  is passed into `generate_redirect_uri/1`,
+  return that `url` with the callback appended to it. #94
   """
   @spec generate_redirect_uri(conn) :: String.t()
   def generate_redirect_uri(url) when is_binary(url) do
-    "https://#{url}" <> get_app_callback_url()
+    # e.g: localhost:4000
+    scheme = if(String.contains?(url, ":")) do
+      "http"
+    else
+      "https"
+    end
+
+    "#{scheme}://#{url}" <> get_app_callback_url()
   end
 
   def generate_redirect_uri(conn) do
