@@ -180,7 +180,6 @@ defmodule ElixirAuthGoogleTest do
     assert ElixirAuthGoogle.generate_oauth_url(url) =~ auth_url
   end
 
-
   test "generate_oauth_url(url) with scheme e.g. https://gcal.fly.dev #94" do
     no_scheme = "gcal.fly.dev"
     url = "https://#{no_scheme}"

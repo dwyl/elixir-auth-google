@@ -127,13 +127,15 @@ defmodule ElixirAuthGoogle do
   @spec get_token(String.t(), conn) :: {:ok, map} | {:error, any}
   def get_token(code, conn) when is_map(conn) do
     redirect_uri = generate_redirect_uri(conn)
+
     inject_poison().post(@google_token_url, req_body(code, redirect_uri))
     |> parse_body_response()
   end
 
   @spec get_token(String.t(), url) :: {:ok, map} | {:error, any}
-  def get_token(code, url) when is_binary(url)  do
+  def get_token(code, url) when is_binary(url) do
     redirect_uri = generate_redirect_uri(url)
+
     inject_poison().post(@google_token_url, req_body(code, redirect_uri))
     |> parse_body_response()
   end
