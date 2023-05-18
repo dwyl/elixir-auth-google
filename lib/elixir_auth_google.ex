@@ -125,18 +125,27 @@ defmodule ElixirAuthGoogle do
   **TODO**: we still need to handle the various failure conditions >> issues/16
   """
   @spec get_token(String.t(), conn) :: {:ok, map} | {:error, any}
-  def get_token(code, conn) do
-    body =
-      Jason.encode!(%{
-        client_id: google_client_id(),
-        client_secret: google_client_secret(),
-        redirect_uri: generate_redirect_uri(conn),
-        grant_type: "authorization_code",
-        code: code
-      })
-
-    inject_poison().post(@google_token_url, body)
+  def get_token(code, conn) when is_map(conn) do
+    redirect_uri = generate_redirect_uri(conn)
+    inject_poison().post(@google_token_url, req_body(code, redirect_uri))
     |> parse_body_response()
+  end
+
+  @spec get_token(String.t(), url) :: {:ok, map} | {:error, any}
+  def get_token(code, url) when is_binary(url)  do
+    redirect_uri = generate_redirect_uri(url)
+    inject_poison().post(@google_token_url, req_body(code, redirect_uri))
+    |> parse_body_response()
+  end
+
+  defp req_body(code, redirect_uri) do
+    Jason.encode!(%{
+      client_id: google_client_id(),
+      client_secret: google_client_secret(),
+      redirect_uri: redirect_uri,
+      grant_type: "authorization_code",
+      code: code
+    })
   end
 
   @doc """
