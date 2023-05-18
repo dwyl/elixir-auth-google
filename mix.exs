@@ -46,9 +46,6 @@ defmodule ElixirAuthGoogle.MixProject do
       # Mock stuffs in test: github.com/jjh42/mock
       {:mock, "~> 0.3.0", only: :test},
 
-      # Plug helper functions: github.com/elixir-plug/plug
-      {:plug, "~> 1.10", only: [:dev, :test]},
-
       # documentation
       {:ex_doc, "~> 0.29.1", only: :dev}
     ]
