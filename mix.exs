@@ -57,7 +57,7 @@ defmodule ElixirAuthGoogle.MixProject do
   defp package do
     [
       maintainers: ["dwyl"],
-      licenses: ["GNU GPL v2.0"],
+      licenses: ["GPL-2.0-or-later"],
       links: %{github: "https://github.com/dwyl/elixir-auth-google"},
       files: ~w(lib LICENSE mix.exs README.md .formatter.exs)
     ]
