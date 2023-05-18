@@ -84,7 +84,7 @@ Add a line for **`:elixir_auth_google`** in the **`deps`** list:
 ```elixir
 def deps do
   [
-    {:elixir_auth_google, "~> 1.6.6"}
+    {:elixir_auth_google, "~> 1.6.7"}
   ]
 end
 ```
