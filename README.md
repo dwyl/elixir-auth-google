@@ -240,8 +240,8 @@ We have noticed that on `fly.io`
 where the `Phoenix` App is proxied,
 passing the `conn` struct 
 to `ElixirAuthGoogle.generate_oauth_url/2`
-is not effective see:
-[dwyl/elixir-auth-google/issues/94](https://github.com/dwyl/elixir-auth-google/issues/94)
+is not effective.
+See [dwyl/elixir-auth-google/issues/94](https://github.com/dwyl/elixir-auth-google/issues/94)
 
 So we added an alternative way 
 of invoking `generate_oauth_url/2`
