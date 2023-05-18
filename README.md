@@ -249,7 +249,7 @@ passing in the `url` of your `App`:
 
 ```elixir
 def index(conn, _params) do
-  base_url = MyApp.Endpoint.url()
+  base_url = MyAppWeb.Endpoint.url()
   oauth_google_url = ElixirAuthGoogle.generate_oauth_url(base_url)
   render(conn, "index.html",[oauth_google_url: oauth_google_url])
 end
@@ -259,7 +259,7 @@ This uses
 [Phoenix.Endpoint.url/0](https://hexdocs.pm/phoenix/Phoenix.Endpoint.html#c:url/0) 
 which is available in any `Phoenix` App.
 
-Just remember to replace `MyApp` with the name of your `App`. 😉
+Just remember to replace `MyAppWeb` with the name of your `App`. 😉
 
 <br />
 

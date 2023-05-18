@@ -30,21 +30,6 @@ defmodule ElixirAuthGoogle do
     "#{Atom.to_string(s)}://#{h}:#{p}"
   end
 
-  # When deployed to Fly.io the scheme is "http" and port is "80" ...
-  # This results in an incorrect url see:
-  # github.com/dwyl/elixir-auth-google/issues/94
-  def get_baseurl_from_conn(%{host: h, req_headers: r}) do
-    proto = case List.keyfind(r, "x-forwarded-proto", 0) do
-      {"x-forwarded-proto", proto} ->
-        proto
-
-      nil ->
-        "http"
-    end
-
-    "#{proto}://#{h}"
-  end
-
   def get_baseurl_from_conn(%{host: h, scheme: s}) do
     "#{Atom.to_string(s)}://#{h}"
   end
@@ -61,9 +46,11 @@ defmodule ElixirAuthGoogle do
 
   @doc """
   `generate_redirect_uri/1` generates the Google redirect uri based on `conn`
-  or the `url`. If the `App.Endpoint.url()` e.g: auth.dwyl.com or gcal.fly.dev
+  or the `url`. If the `App.Endpoint.url()`
+  e.g: auth.dwyl.com or https://gcal.fly.dev
   is passed into `generate_redirect_uri/1`,
-  return that `url` with the callback appended to it. #94
+  return that `url` with the callback appended to it.
+  See: github.com/dwyl/elixir-auth-google/issues/94
   """
   @spec generate_redirect_uri(url) :: String.t()
   def generate_redirect_uri(url) when is_binary(url) do
