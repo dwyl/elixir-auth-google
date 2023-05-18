@@ -2,7 +2,7 @@ defmodule ElixirAuthGoogle.MixProject do
   use Mix.Project
 
   @description "Minimalist Google OAuth Authentication for Elixir Apps"
-  @version "1.6.5"
+  @version "1.6.8"
 
   def project do
     [
@@ -40,9 +40,10 @@ defmodule ElixirAuthGoogle.MixProject do
       {:httpoison, "~> 2.1.0"},
       {:jason, "~> 1.2"},
 
-      # tracking test coverage
+      # Track test coverage: github.com/parroty/excoveralls
       {:excoveralls, "~> 0.16.0", only: [:test, :dev]},
-      # mock stuffs in test
+
+      # Mock stuffs in test: github.com/jjh42/mock
       {:mock, "~> 0.3.0", only: :test},
 
       # documentation
@@ -53,7 +54,7 @@ defmodule ElixirAuthGoogle.MixProject do
   defp package do
     [
       maintainers: ["dwyl"],
-      licenses: ["GNU GPL v2.0"],
+      licenses: ["GPL-2.0-or-later"],
       links: %{github: "https://github.com/dwyl/elixir-auth-google"},
       files: ~w(lib LICENSE mix.exs README.md .formatter.exs)
     ]
@@ -65,5 +66,4 @@ defmodule ElixirAuthGoogle.MixProject do
       c: ["coveralls.html"]
     ]
   end
-
 end

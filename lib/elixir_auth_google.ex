@@ -13,11 +13,12 @@ defmodule ElixirAuthGoogle do
                 ElixirAuthGoogle.HTTPoisonMock) || HTTPoison
 
   @type conn :: map
+  @type url :: String.t()
 
   @doc """
   `inject_poison/0` injects a TestDouble of HTTPoison in Test
   so that we don't have duplicate mock in consuming apps.
-  see: https://github.com/dwyl/elixir-auth-google/issues/35
+  see: github.com/dwyl/elixir-auth-google/issues/35
   """
   def inject_poison, do: @httpoison
 
@@ -44,8 +45,28 @@ defmodule ElixirAuthGoogle do
   end
 
   @doc """
-  `generate_redirect_uri/1` generates the Google redirect uri based on conn
+  `generate_redirect_uri/1` generates the Google redirect uri based on `conn`
+  or the `url`. If the `App.Endpoint.url()`
+  e.g: auth.dwyl.com or https://gcal.fly.dev
+  is passed into `generate_redirect_uri/1`,
+  return that `url` with the callback appended to it.
+  See: github.com/dwyl/elixir-auth-google/issues/94
   """
+  @spec generate_redirect_uri(url) :: String.t()
+  def generate_redirect_uri(url) when is_binary(url) do
+    scheme =
+      cond do
+        # url already contains scheme return empty
+        String.contains?(url, "https") -> ""
+        # url contains ":" is localhost:4000 no need for scheme
+        String.contains?(url, ":") -> ""
+        # Default to https if scheme not set e.g: app.fly.dev -> https://app.fly.fev
+        true -> "https://"
+      end
+
+    "#{scheme}#{url}" <> get_app_callback_url()
+  end
+
   @spec generate_redirect_uri(conn) :: String.t()
   def generate_redirect_uri(conn) do
     get_baseurl_from_conn(conn) <> get_app_callback_url()
@@ -57,8 +78,20 @@ defmodule ElixirAuthGoogle do
   This is the URL you need to use for your "Login with Google" button.
   See step 5 of the instructions.
   """
+  def generate_oauth_url(url) when is_binary(url) do
+    query = %{
+      client_id: google_client_id(),
+      scope: google_scope(),
+      redirect_uri: generate_redirect_uri(url)
+    }
+
+    params = URI.encode_query(query, :rfc3986)
+
+    "#{@google_auth_url}&#{params}"
+  end
+
   @spec generate_oauth_url(conn) :: String.t()
-  def generate_oauth_url(conn) do
+  def generate_oauth_url(conn) when is_map(conn) do
     query = %{
       client_id: google_client_id(),
       scope: google_scope(),
@@ -74,7 +107,7 @@ defmodule ElixirAuthGoogle do
   Same as `generate_oauth_url/1` with `state` query parameter,
   or a `map` of key/pair values to be included in the urls query string.
   """
-  @spec generate_oauth_url(conn, String.t | map) :: String.t()
+  @spec generate_oauth_url(conn, String.t() | map) :: String.t()
   def generate_oauth_url(conn, state) when is_binary(state) do
     params = URI.encode_query(%{state: state}, :rfc3986)
     generate_oauth_url(conn) <> "&#{params}"
@@ -85,7 +118,6 @@ defmodule ElixirAuthGoogle do
     generate_oauth_url(conn) <> "&#{query}"
   end
 
-
   @doc """
   `get_token/2` encodes the secret keys and authorization code returned by Google
   and issues an HTTP request to get a person's profile data.
@@ -93,18 +125,29 @@ defmodule ElixirAuthGoogle do
   **TODO**: we still need to handle the various failure conditions >> issues/16
   """
   @spec get_token(String.t(), conn) :: {:ok, map} | {:error, any}
-  def get_token(code, conn) do
-    body =
-      Jason.encode!(%{
-        client_id: google_client_id(),
-        client_secret: google_client_secret(),
-        redirect_uri: generate_redirect_uri(conn),
-        grant_type: "authorization_code",
-        code: code
-      })
+  def get_token(code, conn) when is_map(conn) do
+    redirect_uri = generate_redirect_uri(conn)
 
-    inject_poison().post(@google_token_url, body)
+    inject_poison().post(@google_token_url, req_body(code, redirect_uri))
     |> parse_body_response()
+  end
+
+  @spec get_token(String.t(), url) :: {:ok, map} | {:error, any}
+  def get_token(code, url) when is_binary(url) do
+    redirect_uri = generate_redirect_uri(url)
+
+    inject_poison().post(@google_token_url, req_body(code, redirect_uri))
+    |> parse_body_response()
+  end
+
+  defp req_body(code, redirect_uri) do
+    Jason.encode!(%{
+      client_id: google_client_id(),
+      client_secret: google_client_secret(),
+      redirect_uri: redirect_uri,
+      grant_type: "authorization_code",
+      code: code
+    })
   end
 
   @doc """
@@ -145,7 +188,7 @@ defmodule ElixirAuthGoogle do
     # https://stackoverflow.com/questions/31990134
   end
 
-  defp google_client_id do
+  def google_client_id do
     System.get_env("GOOGLE_CLIENT_ID") || Application.get_env(:elixir_auth_google, :client_id)
   end
 

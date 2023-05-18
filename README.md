@@ -84,7 +84,7 @@ Add a line for **`:elixir_auth_google`** in the **`deps`** list:
 ```elixir
 def deps do
   [
-    {:elixir_auth_google, "~> 1.6.5"}
+    {:elixir_auth_google, "~> 1.6.8"}
   ]
 end
 ```
@@ -147,7 +147,7 @@ defmodule AppWeb.GoogleAuthController do
   `index/2` handles the callback from Google Auth API redirect.
   """
   def index(conn, %{"code" => code}) do
-    {:ok, token} = ElixirAuthGoogle.get_token(code, conn)
+    {:ok, token} = ElixirAuthGoogle.get_token(code, MyAppWeb.Endpoint.url())
     {:ok, profile} = ElixirAuthGoogle.get_user_profile(token.access_token)
     conn
     |> put_view(AppWeb.PageView)
@@ -233,6 +233,35 @@ oauth_google_url = ElixirAuthGoogle.generate_oauth_url(conn, %{lang: 'pt-BR'})
 ```
 
 Will return a url with `lang=pt-BR` included in the sign in request.
+
+#### _Alternatively_ pass the `url` of your `App` into `generate_oauth_url/1`
+
+We have noticed that on `fly.io` 
+where the `Phoenix` App is proxied,
+passing the `conn` struct 
+to `ElixirAuthGoogle.generate_oauth_url/2`
+is not effective.
+See [dwyl/elixir-auth-google/issues/94](https://github.com/dwyl/elixir-auth-google/issues/94)
+
+So we added an alternative way 
+of invoking `generate_oauth_url/2`
+passing in the `url` of your `App`:
+
+```elixir
+def index(conn, _params) do
+  base_url = MyAppWeb.Endpoint.url()
+  oauth_google_url = ElixirAuthGoogle.generate_oauth_url(base_url)
+  render(conn, "index.html",[oauth_google_url: oauth_google_url])
+end
+```
+
+This uses 
+[Phoenix.Endpoint.url/0](https://hexdocs.pm/phoenix/Phoenix.Endpoint.html#c:url/0) 
+which is available in any `Phoenix` App.
+
+Just remember to replace `MyAppWeb` with the name of your `App`. 😉
+
+<br />
 
 ### 6.1 Update the `page/index.html.eex` Template
 
