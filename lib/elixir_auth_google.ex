@@ -34,7 +34,15 @@ defmodule ElixirAuthGoogle do
   # This results in an incorrect url see:
   # github.com/dwyl/elixir-auth-google/issues/94
   def get_baseurl_from_conn(%{host: h, req_headers: r}) do
-    "#{Map.get(r, "x-forwarded-proto")}://#{h}"
+    proto = case List.keyfind(r, "x-forwarded-proto", 0) do
+      {"x-forwarded-proto", proto} ->
+        proto
+
+      nil ->
+        "http"
+    end
+
+    "#{proto}://#{h}"
   end
 
   def get_baseurl_from_conn(%{host: h, scheme: s}) do

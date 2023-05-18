@@ -40,10 +40,14 @@ defmodule ElixirAuthGoogle.MixProject do
       {:httpoison, "~> 2.1.0"},
       {:jason, "~> 1.2"},
 
-      # tracking test coverage
+      # Track test coverage: github.com/parroty/excoveralls
       {:excoveralls, "~> 0.16.0", only: [:test, :dev]},
-      # mock stuffs in test
+
+      # Mock stuffs in test: github.com/jjh42/mock
       {:mock, "~> 0.3.0", only: :test},
+
+      # Plug helper functions: github.com/elixir-plug/plug
+      {:plug, "~> 1.10", only: [:dev, :test]},
 
       # documentation
       {:ex_doc, "~> 0.29.1", only: :dev}

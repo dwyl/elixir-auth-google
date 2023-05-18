@@ -1,21 +1,37 @@
 defmodule ElixirAuthGoogleTest do
   use ExUnit.Case, async: true
-  # use Plug.Test
+  use Plug.Test
   doctest ElixirAuthGoogle
 
   import Mock
 
   test "get_baseurl_from_conn(conn) x-forwarded-proto header for https #94" do
-    conn = %{
-      host: "gcal.fly.dev",
-      port: 80,
-      scheme: :http,
-      req_headers: %{
-        "x-forwarded-proto" => "https"
-      }
-    }
 
+    conn =
+      conn(:get, "/")
+      |> put_req_header("x-forwarded-proto", "https")
+      |> Map.put(:host, "gcal.fly.dev")
+
+    # dbg(conn)
+    # %{
+    #   host: "gcal.fly.dev",
+    #   port: 80,
+    #   scheme: :http,
+    #   req_headers: [
+    #     { "x-forwarded-proto", "https"}
+    #   ]
+    # }
     assert ElixirAuthGoogle.get_baseurl_from_conn(conn) == "https://gcal.fly.dev"
+  end
+
+  test "get_baseurl_from_conn(conn) any header gives http #94" do
+
+    conn =
+      conn(:get, "/")
+      |> put_req_header("not-proto", "any")
+      |> Map.put(:host, "gcal.fly.dev")
+
+    assert ElixirAuthGoogle.get_baseurl_from_conn(conn) == "http://gcal.fly.dev"
   end
 
   test "get_baseurl_from_conn(conn) detects the URL based on conn.host HTTP" do
