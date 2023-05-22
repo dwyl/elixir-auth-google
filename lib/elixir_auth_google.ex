@@ -78,6 +78,7 @@ defmodule ElixirAuthGoogle do
   This is the URL you need to use for your "Login with Google" button.
   See step 5 of the instructions.
   """
+  @spec generate_oauth_url(binary()) :: String.t()
   def generate_oauth_url(url) when is_binary(url) do
     query = %{
       client_id: google_client_id(),
