@@ -37,7 +37,7 @@ defmodule ElixirAuthGoogle.MixProject do
   defp deps do
     [
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:httpoison, "~> 2.1.0"},
+      {:httpoison, "~> 2.2.0"},
       {:jason, "~> 1.2"},
 
       # Track test coverage: github.com/parroty/excoveralls
