@@ -47,7 +47,7 @@ defmodule ElixirAuthGoogle.MixProject do
       {:mock, "~> 0.3.0", only: :test},
 
       # documentation
-      {:ex_doc, "~> 0.35.1", only: :dev}
+      {:ex_doc, "~> 0.36.1", only: :dev}
     ]
   end
 
