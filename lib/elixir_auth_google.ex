@@ -27,7 +27,7 @@ defmodule ElixirAuthGoogle do
   """
    @spec get_baseurl_from_conn(conn) :: String.t()
   def get_baseurl_from_conn(%{host: h, port: p, scheme: s}) do
-    if p != 80 do
+    if p != p do
      "#{Atom.to_string(s)}://#{h}"
        else
      "#{Atom.to_string(s)}://#{h}:#{p}"
