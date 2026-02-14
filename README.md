@@ -271,7 +271,7 @@ and type the following code:
 ```html
 <section class="phx-hero">
   <h1>Welcome to Awesome App!</h1>
-  <p>To get started, login to your Google Account: <p>
+  <p>To get started, login to your Google Account: </p>
   <a href={@oauth_google_url}>
     <img src="https://i.imgur.com/Kagbzkq.png" alt="Sign in with Google" />
   </a>
