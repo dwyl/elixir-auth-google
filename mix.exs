@@ -15,8 +15,13 @@ defmodule ElixirAuthGoogle.MixProject do
       package: package(),
       aliases: aliases(),
       # coverage
-      test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [
+      test_coverage: [tool: ExCoveralls]
+    ]
+  end
+
+  def cli do
+    [
+      preferred_envs: [
         c: :test,
         coveralls: :test,
         "coveralls.json": :test,
@@ -37,7 +42,7 @@ defmodule ElixirAuthGoogle.MixProject do
   defp deps do
     [
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:httpoison, "~> 2.3.0"},
+      {:httpoison, "~> 2.3"},
       {:jason, "~> 1.2"},
 
       # Track test coverage: github.com/parroty/excoveralls

@@ -80,11 +80,11 @@ defmodule ElixirAuthGoogle do
   """
   @spec generate_oauth_url(String.t()) :: String.t()
   def generate_oauth_url(url) when is_binary(url) do
-    query = %{
+    query = [
       client_id: google_client_id(),
-      scope: google_scope(),
-      redirect_uri: generate_redirect_uri(url)
-    }
+      redirect_uri: generate_redirect_uri(url),
+      scope: google_scope()
+    ]
 
     params = URI.encode_query(query, :rfc3986)
 
@@ -93,11 +93,11 @@ defmodule ElixirAuthGoogle do
 
   @spec generate_oauth_url(conn) :: String.t()
   def generate_oauth_url(conn) when is_map(conn) do
-    query = %{
+    query = [
       client_id: google_client_id(),
-      scope: google_scope(),
-      redirect_uri: generate_redirect_uri(conn)
-    }
+      redirect_uri: generate_redirect_uri(conn),
+      scope: google_scope()
+    ]
 
     params = URI.encode_query(query, :rfc3986)
 
