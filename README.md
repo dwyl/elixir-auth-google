@@ -61,7 +61,7 @@ This module is for people building apps using Elixir/Phoenix
 who want to ship the "Sign-in with Google" feature _faster_
 and more maintainably.
 
-It's targetted at _complete_ beginners
+It's targeted at _complete_ beginners
 with no prior experience/knowledge
 of auth "schemes" or "strategies". <br />
 Just follow the detailed instructions
