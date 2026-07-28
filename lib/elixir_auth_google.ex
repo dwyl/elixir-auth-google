@@ -26,9 +26,14 @@ defmodule ElixirAuthGoogle do
   `get_baseurl_from_conn/1` derives the base URL from the conn struct
   """
   @spec get_baseurl_from_conn(conn) :: String.t()
-  def get_baseurl_from_conn(%{host: h, port: p, scheme: s}) when p != 80 do
-    "#{Atom.to_string(s)}://#{h}:#{p}"
+  def get_baseurl_from_conn(%{host: h, port: p, scheme: s}) do
+    cond do
+      p == 443 -> "#{Atom.to_string(s)}://#{h}"
+      p == 80 -> "#{Atom.to_string(s)}://#{h}"
+      true -> "#{Atom.to_string(s)}://#{h}:#{p}"
+    end
   end
+
 
   def get_baseurl_from_conn(%{host: h, scheme: s}) do
     "#{Atom.to_string(s)}://#{h}"
